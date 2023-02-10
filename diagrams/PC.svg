@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" width="720" height="405" id="svg2" version="1.1" inkscape:version="0.48.4 r9939" sodipodi:docname="Dekstop computer bus bandwidths.svg">
+  <title id="title3043">Dekstop computer bus bandwidths</title>
+  <defs id="defs4"/>
+  <sodipodi:namedview id="base" pagecolor="#ffffff" bordercolor="#666666" borderopacity="1.0" inkscape:pageopacity="0.0" inkscape:pageshadow="2" inkscape:zoom="1.4142136" inkscape:cx="387.2468" inkscape:cy="216.72653" inkscape:document-units="px" inkscape:current-layer="layer1" showgrid="false" fit-margin-top="0" fit-margin-left="0" fit-margin-right="0" fit-margin-bottom="0" inkscape:snap-page="true" inkscape:snap-bbox="true" inkscape:bbox-paths="true" inkscape:bbox-nodes="true" inkscape:snap-bbox-edge-midpoints="true" inkscape:window-width="1920" inkscape:window-height="1014" inkscape:window-x="0" inkscape:window-y="27" inkscape:window-maximized="1" inkscape:snap-global="false">
+    <inkscape:grid type="xygrid" id="grid3049"/>
+  </sodipodi:namedview>
+  <metadata id="metadata7">
+    <rdf:RDF>
+      <cc:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <dc:title>Dekstop computer bus bandwidths</dc:title>
+        <dc:description>System and graphics memory bus, and PCIe bus bandwidths</dc:description>
+        <dc:date>2014-06-25</dc:date>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>Shmuel Csaba Otto Traian Xerxes</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:rights>
+          <cc:Agent>
+            <dc:title>Shmuel Csaba Otto Traian Xerxes</dc:title>
+          </cc:Agent>
+        </dc:rights>
+        <dc:language>en-US</dc:language>
+        <dc:subject>
+          <rdf:Bag/>
+        </dc:subject>
+        <dc:identifier>https://commons.wikimedia.org/wiki/File:Dekstop_computer_bus_bandwidths.svg</dc:identifier>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/by-sa/4.0/"/>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/by-sa/3.0/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:requires rdf:resource="http://creativecommons.org/ns#Notice"/>
+        <cc:requires rdf:resource="http://creativecommons.org/ns#Attribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+        <cc:requires rdf:resource="http://creativecommons.org/ns#ShareAlike"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+  <g inkscape:label="Layer 1" inkscape:groupmode="layer" id="layer1" transform="translate(-38.285713,-111.21873)">
+    <use x="0" y="0" xlink:href="#rect2989" id="use3051" transform="translate(410,2.7093697e-6)" width="744.09448" height="1052.3622"/>
+    <g id="g3146">
+      <use height="1052.3622" width="744.09448" transform="translate(410,0)" id="use3043" xlink:href="#rect2985" y="0" x="0"/>
+      <rect y="337.21875" x="104.28571" height="178" width="178" id="rect2985" style="fill:#3465a4;fill-opacity:1;stroke:#204a87;stroke-width:1.99999893000000006;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    </g>
+    <rect y="112.21873" x="44.285713" height="68" width="298" id="rect2989" style="fill:#73d216;fill-opacity:1;stroke:#4e9a06;stroke-width:1.99999963999999997;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"/>
+    <path style="fill:#ef2929;fill-opacity:1;fill-rule:nonzero;stroke:#a40000;stroke-width:2.99999976;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline" d="m 193.28571,182.44129 -28.5,23.78125 15,0 0,104.71496 -15,0 28.5,23.78125 28.5,-23.78125 -15,0 0,-104.71496 15,0 z" id="path3029" inkscape:connector-curvature="0" sodipodi:nodetypes="ccccccccccc"/>
+    <path sodipodi:nodetypes="ccccccccccc" inkscape:connector-curvature="0" id="path3381" d="m 512.07788,405.00556 -23.78125,-28.5 0,15 -180.02183,0 0,-15 -23.78125,28.5 23.78125,28.5 0,-15 180.02183,0 0,15 z" style="fill:#e9b96e;fill-opacity:1;fill-rule:nonzero;stroke:#8f5902;stroke-width:2.99999976;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"/>
+    <path sodipodi:nodetypes="ccccccccccc" inkscape:connector-curvature="0" id="path3427" d="m 603.28571,182.44129 -28.5,23.78125 15,0 0,104.71496 -15,0 28.5,23.78125 28.5,-23.78125 -15,0 0,-104.71496 15,0 z" style="fill:#ad7fa8;fill-opacity:1;fill-rule:nonzero;stroke:#5c3566;stroke-width:2.99999976;stroke-linecap:square;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"/>
+    <text xml:space="preserve" style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" x="38.191963" y="106.04881" id="text3045" sodipodi:linespacing="125%"><tspan sodipodi:role="line" id="tspan3047" x="38.191963" y="106.04881" style="font-size:12px">Author: Shmuel Csaba Otto Traian Xerxes License: CC-BY-SA 4.0 Creation date: 2014-06-25</tspan></text>
+  </g>
+  <g inkscape:groupmode="layer" id="layer2" inkscape:label="text">
+    <text xml:space="preserve" style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:-7.92000008000000033px;writing-mode:lr-tb;text-anchor:start;fill:#204a87;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" x="119.21093" y="326.64847" id="text2995" sodipodi:linespacing="125%"><tspan sodipodi:role="line" id="tspan2997" x="119.21093" y="326.64847" style="font-size:32px;font-weight:bold;-inkscape-font-specification:Sans Bold;fill:#000000">CPU</tspan></text>
+    <text xml:space="preserve" style="font-size:32px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:-7.92000008000000033px;writing-mode:lr-tb;text-anchor:start;fill:#204a87;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" x="527.83594" y="323.73636" id="text2999" sodipodi:linespacing="125%"><tspan sodipodi:role="line" id="tspan3001" x="527.83594" y="323.73636" style="font-size:32px;font-weight:bold;-inkscape-font-specification:Sans Bold;fill:#000000">GPU</tspan></text>
+    <text xml:space="preserve" style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" x="46.742188" y="40.835926" id="text3003" sodipodi:linespacing="125%"><tspan sodipodi:role="line" x="46.742188" y="40.835926" id="tspan3007" style="font-weight:bold;-inkscape-font-specification:Sans Bold;fill:#000000">system memory</tspan></text>
+    <text sodipodi:linespacing="125%" id="text3009" y="41.527348" x="447.14453" style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#4e9a06;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" xml:space="preserve"><tspan id="tspan3013" y="41.527348" x="447.14453" sodipodi:role="line" style="font-weight:bold;-inkscape-font-specification:Sans Bold;fill:#000000">graphics memory</tspan></text>
+    <text xml:space="preserve" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" x="77.46875" y="131.77536" id="text3053" sodipodi:linespacing="125%"><tspan sodipodi:role="line" x="77.46875" y="131.77536" id="tspan3443">128-bit DDR3-2133</tspan><tspan sodipodi:role="line" x="77.46875" y="151.77536" id="tspan3457">= 34.13 GB/s</tspan></text>
+    <text sodipodi:linespacing="125%" id="text3059" y="131.77536" x="481.33203" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" xml:space="preserve"><tspan y="131.77536" x="481.33203" sodipodi:role="line" id="tspan3445">384-bit GDDR5-6000</tspan><tspan y="151.77536" x="481.33203" sodipodi:role="line" id="tspan3447">= 336.4 GB/s</tspan></text>
+    <text xml:space="preserve" style="font-size:24px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#8f5902;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold" x="251.84766" y="249.29465" id="text3142" sodipodi:linespacing="125%"><tspan sodipodi:role="line" id="tspan3144" x="251.84766" y="249.29465">PCI Express bus</tspan></text>
+    <text sodipodi:linespacing="125%" id="text3065" y="348.23685" x="253.32812" style="font-size:16px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" xml:space="preserve"><tspan y="348.23685" x="253.32812" sodipodi:role="line" id="tspan3154">PCIe 2.0 x16 = 8GB/s</tspan><tspan y="368.23685" x="253.32812" sodipodi:role="line" id="tspan3377">PCIe 3.0 x16 = 15.75 GB/s</tspan></text>
+    <text sodipodi:linespacing="125%" id="text3409" y="244.403" x="156.41437" style="font-size:24px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans" xml:space="preserve"><tspan y="244.403" x="156.41437" id="tspan3411" sodipodi:role="line" style="font-size:14px;font-weight:bold;text-align:center;text-anchor:middle;fill:#204a87;-inkscape-font-specification:Sans Bold">Memory controller</tspan><tspan y="261.90302" x="156.41437" sodipodi:role="line" style="font-size:14px;font-weight:bold;text-align:center;text-anchor:middle;fill:#204a87;-inkscape-font-specification:Sans Bold" id="tspan3465">MMU</tspan><tspan y="279.40302" x="156.41437" sodipodi:role="line" style="font-size:14px;font-weight:bold;text-align:center;text-anchor:middle;fill:#204a87;-inkscape-font-specification:Sans Bold" id="tspan3467">cache hierarchy</tspan></text>
+    <use x="0" y="0" xlink:href="#text3409" id="use3417" transform="translate(410.12193,-1.0606601)" width="720" height="405"/>
+    <text sodipodi:linespacing="125%" id="text3419" y="88.234375" x="16.876953" style="font-size:24px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#a40000;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold" xml:space="preserve"><tspan y="88.234375" x="16.876953" id="tspan3421" sodipodi:role="line">System memory bus</tspan></text>
+    <text xml:space="preserve" style="font-size:24px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#5c3566;fill-opacity:1;stroke:none;font-family:Sans;-inkscape-font-specification:Sans Bold" x="417.71875" y="88.234375" id="text3423" sodipodi:linespacing="125%"><tspan sodipodi:role="line" id="tspan3425" x="417.71875" y="88.234375">Graphics memory bus</tspan></text>
+  </g>
+</svg>

@@ -1,0 +1,249 @@
+<html>
+<head>
+  <link rel="stylesheet" href="dist/reveal.css">
+  <link rel="stylesheet" href="dist/theme/white.css">
+  <style>
+  .reveal {
+    --r-heading-text-transform: '';
+    --r-main-font-size: 24pt;
+  }
+  .smaller {
+    font-size: 0.8em;
+  }
+  li {
+    line-height: 1.1;
+  }
+  li {
+    margin-top: 0.5em;
+  }
+  footer {
+    text-align: right;
+    font-size: 0.5em;
+  }
+  </style>
+</head>
+<body>
+<div class="reveal">
+<div class="slides">
+
+
+<!-- Introduction -->
+<section>
+  <section>
+    <h1>Imaging and ML software from a low-level programming perspective</h1>
+    <h5 style="color: red;">{WORK IN PROGRESS}</h5>
+  </section>
+  
+  <section>
+    <h2>Imaging Software in Production: Basics</h2>
+    <img src="diagrams/Intro.drawio.svg"/>
+  </section>
+  
+  <section>
+    <ul>
+      <h2>Imaging Software in Production</h2>
+      <li>Designing production-ready imaging algorithms and NN architectures is a challenge.</li>
+      <li><strong>Speed</strong>, <strong>memory</strong> and <strong>energy footprints</strong> are constrained.</li>
+      <li>Algorithmic optimization incurs performance losses.</li>
+      <li>Knowing your hardware at a low level helps.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>ML in production: market</h2>
+    <img src="diagrams/MLOps.drawio.svg" style="width: 90%;"/>
+    <footer>
+      <a href="https://techcrunch.com/2021/11/01/octoml-raises-85m-for-it-for-its-machine-learning-acceleration-platform/">[source]</a>
+      <a href="https://www.forbes.com/sites/robtoews/2022/12/20/10-ai-predictions-for-2023/">[source]</a>
+      <a href="https://3dprintingindustry.com/news/nano-dimension-acquires-ai-company-deepcube-for-70m-189002/">[source]</a>
+      <a href="https://techcrunch.com/2022/12/06/neureality-ai-accelerator-chips-startup-raises-35m/">[source]</a>
+      <a href="https://www.prweb.com/releases/neural_magic_announces_30_million_series_a_funding_led_by_nea/prweb18240687.htm">[source]</a>
+      <a href="https://www.forbes.com/sites/patrickmoorhead/2022/08/11/memryx-is-a-new-ai-company-we-actually-need/">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <ul>
+      <h2>From Computer Vision to Image Processing</h2>
+      <li>Semantic gap</li>
+      <li>Vision models usually map small images to low-dimensional spaces.
+        <ul class="smaller">
+          <li>ILSVRC classic models take a 224*224 image to output a 1000-long vector.</li>
+        </ul>
+      </li>
+      <li>Image restoration algorithms typically take and produce images of the same high resolution.
+        <ul class="smaller">
+          <li>Standard smartphone camera photo resolution is 4000*3000.</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+</section>
+
+
+<!-- Outline -->
+<section style="font-size: 0.8em">
+  <h1>Outline</h1>
+  <ol>
+    <li style="color: lightgray">Introduction</li>
+
+    <li>Programmable hardware overview
+      <ul class="smaller">
+        <li>CPU</li>
+        <li>GPU
+          <!-- <ul>
+            <li>History: from fixed graphic pipeline to modern programmable GPU</li>
+            <li>Memory model overview</li>
+            <li>SIMT vs SIMD</li>
+            <li>CUDA, OpenCL, GLSL</li>
+          </ul> -->
+        </li>
+        <li>DSP</li>
+      </ul>
+    </li>
+
+    <li>Deploying to production
+      <ul class="smaller">
+        <li>Algorithm characterization</li>
+        <li>Common ML model optimization techniques
+          <ul>
+            <li>Quantization and QAT</li>
+            <li>Pruning</li>
+          </ul>
+        </li>
+      </ul>
+    </li>
+
+    <li>Conclusion</li>
+  </ol>
+</section>
+
+
+<!-- Hardware overview  -->
+<section>
+  <section>
+    <h2>Programmable hardware overview</h2>
+  </section>
+
+  <section>
+    <h2>Vanilla server/desktop system</h2>
+    
+    <img src="diagrams/PC.svg" style="max-width: 60%;"/>
+
+    <footer>
+      <a href="https://en.wikipedia.org/wiki/File:Desktop_computer_bus_bandwidths.svg">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Mobile SoC (System on Chip)</h2>
+    <h6>Example of Qualcomm&copy; Snapdragon&trade; 8+ Gen 1 (2022)</h6>
+
+    <img src="diagrams/SoC.drawio.svg" style="max-width: 60%;"/>
+    
+    <footer>
+      <a href="https://www.forbes.com/sites/marcochiappetta/2021/11/30/snapdragon-8-gen-1-the-qualcomm-mobile-platform-that-will-power-next-gen-android-flagship-phones/">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Mobile vs Desktop</h2>
+    <ul>
+      <li>No unified memory in the desktop world.
+        <ul class="smaller">
+          <li>Think ahead about CPU&leftrightarrow;GPU data transfer.</li>
+          <li>PCIe is the weak link (~10 times slower than the GPU VRAM bandwidth).</li>
+        </ul>
+      </li>
+      <li>Modern x86 desktop CPUs also include integrated graphics (iGPU) without dedicated memory.</li>
+      <li>Digital Signal Processors (DSP) are very common in mobile SoCs.
+        <ul>
+          <li><em>Edge computing</em>: processing data right on the device it comes from.</li>
+          <li>NPU is a marketing name/abstraction level on top of the DSP.</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+</section>
+
+
+<!-- Hardware overview: CPU  -->
+<section>
+  <section>
+    <h2>Programmable hardware overview</h2>
+    <strong>C</strong>entral <strong>P</strong>rocessor <strong>U</strong>nits
+  </section>
+
+  <section>
+    <h2>Definitions</h2>
+    <ul>
+      <li>CPU is a general-purpose programmable device running programs built of <em>instructions.</em></li>
+      <li><em>Instruction set</em> is the language understandable by a specific CPU architecture.</li>
+      <li>Common instruction types:
+        <ul>
+          <li>setting, loading and storing values of <strong>registers</strong>,</li>
+          <li>arithmetic operations with the registers content,</li>
+          <li>control flow (branches and jumps).</li>
+        </ul>
+      </li>
+      <li><em>Clock cycle</em>: atomic time value.</li>
+      <li><em>Instruction latency</em>: number of cycles taken to execute it.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Common architectures</h2>
+    <table>
+      <thead>
+        <tr>
+          <td style="color: gray">Architecture family</td>
+          <td><strong>x86</strong></td>
+          <td><strong>ARM</strong></td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="color: gray">Instruction set<br/>classification</td>
+          <td>Complex Instruction Set Computer</br>(CISC)</td>
+          <td>Reduced Instruction Set Computer</br>(RISC)</td>
+        </tr>
+        <tr>
+          <td style="color: gray">Usage</td>
+          <td>Mainly desktop/data center.<br/>Weak mobile market penetration</td>
+          <td>Mainly embedded.<br/>About to change: <a href="https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/">NVidia Grace</a></td>
+        </tr>
+        <tr>
+          <td style="color: gray">Key brand names</td>
+          <td>Intel, AMD</td>
+          <td>ARM<br/>Apple, Samsung, Qualcomm, ...</td>
+        </tr>
+        <tr>
+          <td style="color: gray">Vector extensions (SIMD)</td>
+          <td>MMX, SSE, FMA, AVX, ...</td>
+          <td>NEON</td>
+        </tr>
+        <tr>
+          <td style="color: gray">Word size</td>
+          <td colspan="2" style="text-align: center">32 or 64 bits</td>
+        </tr>
+        <tr>
+          <td style="color: gray">Simultaneous<br/>multithreading<br/>aka "Hyper-Threading"</td>
+          <td>Yes:<br/>commonly 2 logical per 1 physical</td>
+          <td>No till recently: <a href="https://www.arm.com/products/silicon-ip-cpu/cortex-a/cortex-a65ae">Cortex A65</a></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="smaller">Other architectures exist. To keep an eye on: RISC-V.</p>
+  </section>
+</section>
+
+
+</div>
+</div>
+<script src="dist/reveal.js"></script>
+<script>
+  Reveal.initialize();
+</script>
+</body>
+</html>
