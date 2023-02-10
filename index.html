@@ -1,7 +1,9 @@
 <html>
 <head>
-  <link rel="stylesheet" href="dist/reveal.css">
-  <link rel="stylesheet" href="dist/theme/white.css">
+  <link rel="stylesheet" href="revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="revealjs/dist/theme/white.css">
+  <script src="revealjs/dist/reveal.js"></script>
+  <script src="revealjs/plugin/markdown/markdown.js"></script>
   <style>
   .reveal {
     --r-heading-text-transform: '';
@@ -39,14 +41,14 @@
     <img src="diagrams/Intro.drawio.svg"/>
   </section>
   
-  <section>
-    <ul>
-      <h2>Imaging Software in Production</h2>
-      <li>Designing production-ready imaging algorithms and NN architectures is a challenge.</li>
-      <li><strong>Speed</strong>, <strong>memory</strong> and <strong>energy footprints</strong> are constrained.</li>
-      <li>Algorithmic optimization incurs performance losses.</li>
-      <li>Knowing your hardware at a low level helps.</li>
-    </ul>
+  <section data-markdown>
+    <textarea data-template>
+    ## Imaging Software in Production
+    - Designing production-ready imaging algorithms and NN architectures is a challenge.
+    - **Speed**, **memory** and **energy footprints** are constrained.
+    - Algorithmic optimization incurs performance losses.
+    - Knowing your hardware at a low level helps.
+    </textarea>
   </section>
 
   <section>
@@ -62,21 +64,15 @@
     </footer>
   </section>
 
-  <section>
-    <ul>
-      <h2>From Computer Vision to Image Processing</h2>
-      <li>Semantic gap</li>
-      <li>Vision models usually map small images to low-dimensional spaces.
-        <ul class="smaller">
-          <li>ILSVRC classic models take a 224*224 image to output a 1000-long vector.</li>
-        </ul>
-      </li>
-      <li>Image restoration algorithms typically take and produce images of the same high resolution.
-        <ul class="smaller">
-          <li>Standard smartphone camera photo resolution is 4000*3000.</li>
-        </ul>
-      </li>
-    </ul>
+  <section data-markdown>
+    <textarea data-template>
+    ## From Computer Vision to Image Processing
+    - Semantic gap
+    - Vision models usually map small images to low-dimensional spaces.
+      - ILSVRC classic models take a 224*224 image to output a 1000-long vector.
+    - Image restoration algorithms typically take and produce images of the same high resolution.
+      - Standard smartphone camera photo resolution is 4000*3000.
+    </textarea>
   </section>
 </section>
 
@@ -146,23 +142,17 @@
     </footer>
   </section>
 
-  <section>
-    <h2>Mobile vs Desktop</h2>
-    <ul>
-      <li>No unified memory in the desktop world.
-        <ul class="smaller">
-          <li>Think ahead about CPU&leftrightarrow;GPU data transfer.</li>
-          <li>PCIe is the weak link (~10 times slower than the GPU VRAM bandwidth).</li>
-        </ul>
-      </li>
-      <li>Modern x86 desktop CPUs also include integrated graphics (iGPU) without dedicated memory.</li>
-      <li>Digital Signal Processors (DSP) are very common in mobile SoCs.
-        <ul>
-          <li><em>Edge computing</em>: processing data right on the device it comes from.</li>
-          <li>NPU is a marketing name/abstraction level on top of the DSP.</li>
-        </ul>
-      </li>
-    </ul>
+  <section data-markdown>
+    <textarea data-template>
+    ## Mobile vs Desktop
+    - No unified memory in the desktop world.
+      - Think ahead about CPU&leftrightarrow;GPU data transfer.
+      - PCIe is the weak link (~10 times slower than the GPU VRAM bandwidth).
+    - Modern x86 desktop CPUs also include integrated graphics (iGPU) without dedicated memory.
+    - Digital Signal Processors (DSP) are very common in mobile SoCs.
+      - *Edge computing*: processing data right on the device it comes from.
+      - NPU is a marketing name/abstraction level on top of the DSP.
+    </textarea>
   </section>
 </section>
 
@@ -174,21 +164,17 @@
     <strong>C</strong>entral <strong>P</strong>rocessor <strong>U</strong>nits
   </section>
 
-  <section>
-    <h2>Definitions</h2>
-    <ul>
-      <li>CPU is a general-purpose programmable device running programs built of <em>instructions.</em></li>
-      <li><em>Instruction set</em> is the language understandable by a specific CPU architecture.</li>
-      <li>Common instruction types:
-        <ul>
-          <li>setting, loading and storing values of <strong>registers</strong>,</li>
-          <li>arithmetic operations with the registers content,</li>
-          <li>control flow (branches and jumps).</li>
-        </ul>
-      </li>
-      <li><em>Clock cycle</em>: atomic time value.</li>
-      <li><em>Instruction latency</em>: number of cycles taken to execute it.</li>
-    </ul>
+  <section data-markdown>
+    <textarea data-template>
+    ## Basics
+    - CPU is a general-purpose programmable device running programs built of *instructions.*
+      - A program is usually generated *compilation toolchains* from a higher-level source code.
+    - *Instruction set* is the language understandable by a specific CPU architecture.
+    - Common instruction types:
+      - setting, loading and storing values of *registers*,
+      - arithmetic operations with the registers content,
+      - control flow (branches and jumps).
+    </textarea>
   </section>
 
   <section>
@@ -229,21 +215,38 @@
         <tr>
           <td style="color: gray">Simultaneous<br/>multithreading<br/>aka "Hyper-Threading"</td>
           <td>Yes:<br/>commonly 2 logical per 1 physical</td>
-          <td>No till recently: <a href="https://www.arm.com/products/silicon-ip-cpu/cortex-a/cortex-a65ae">Cortex A65</a></td>
+          <td>No, till recently: <a href="https://www.arm.com/products/silicon-ip-cpu/cortex-a/cortex-a65ae">Cortex A65</a></td>
         </tr>
       </tbody>
     </table>
 
     <p class="smaller">Other architectures exist. To keep an eye on: RISC-V.</p>
   </section>
+
+  <section data-markdown>
+    <textarea data-template>
+    ## Speed
+    - *Clock cycle*: atomic value of elapsed time.
+    - *Instruction latency*: number of cycles taken to execute it.
+    - Modern CPUs are complex machines and may execute multiple instructions of the same program at a time.
+    - Binary arithmetic instructions latency (operating with registers content):
+      - Integer addition/subtraction: as fast as 1 cycle. <!-- .element: class="smaller" -->
+      - Integer multiplication and floating-point operations: more. <!-- .element: class="smaller" -->
+      - Division: even more. <!-- .element: class="smaller" -->
+      - Multiplication-accumulation is typically a single instruction and is done faster than a multiplication and an addition separately. <!-- .element: class="smaller" -->
+    </textarea>
+  </section>
 </section>
 
 
 </div>
 </div>
-<script src="dist/reveal.js"></script>
+
 <script>
-  Reveal.initialize();
+  Reveal.initialize({
+    hash: true,
+    plugins: [ RevealMarkdown ]
+  });
 </script>
 </body>
 </html>
