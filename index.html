@@ -4,23 +4,32 @@
   <link rel="stylesheet" href="revealjs/dist/theme/white.css">
   <script src="revealjs/dist/reveal.js"></script>
   <script src="revealjs/plugin/markdown/markdown.js"></script>
+
   <style>
   .reveal {
     --r-heading-text-transform: '';
-    --r-main-font-size: 24pt;
   }
   .smaller {
     font-size: 0.8em;
   }
+  .code {
+    font-family: monospace;
+  }
+
   li {
     line-height: 1.1;
-  }
-  li {
     margin-top: 0.5em;
   }
+
+  /* nested list indent */
+  li > ul {
+    padding-left: 0;
+  }
+
   footer {
     text-align: right;
     font-size: 0.5em;
+    margin-top: 3em;
   }
   </style>
 </head>
@@ -35,12 +44,12 @@
     <h1>Imaging and ML software from a low-level programming perspective</h1>
     <h5 style="color: red;">{WORK IN PROGRESS}</h5>
   </section>
-  
+
   <section>
     <h2>Imaging Software in Production: Basics</h2>
-    <img src="diagrams/Intro.drawio.svg"/>
+    <img src="diagrams/Intro.drawio.svg" class="r-stretch"/>
   </section>
-  
+
   <section data-markdown>
     <textarea data-template>
     ## Imaging Software in Production
@@ -53,7 +62,7 @@
 
   <section>
     <h2>ML in production: market</h2>
-    <img src="diagrams/MLOps.drawio.svg" style="width: 90%;"/>
+    <img src="diagrams/MLOps.drawio.svg" class="r-stretch"/>
     <footer>
       <a href="https://techcrunch.com/2021/11/01/octoml-raises-85m-for-it-for-its-machine-learning-acceleration-platform/">[source]</a>
       <a href="https://www.forbes.com/sites/robtoews/2022/12/20/10-ai-predictions-for-2023/">[source]</a>
@@ -83,7 +92,7 @@
   <ol>
     <li style="color: lightgray">Introduction</li>
 
-    <li>Programmable hardware overview
+    <li>Programmable Hardware Overview
       <ul class="smaller">
         <li>CPU</li>
         <li>GPU
@@ -118,13 +127,13 @@
 <!-- Hardware overview  -->
 <section>
   <section>
-    <h2>Programmable hardware overview</h2>
+    <h2>Programmable Hardware Overview</h2>
   </section>
 
   <section>
     <h2>Vanilla server/desktop system</h2>
-    
-    <img src="diagrams/PC.svg" style="max-width: 60%;"/>
+
+    <img src="diagrams/PC.svg" class="r-stretch"/>
 
     <footer>
       <a href="https://en.wikipedia.org/wiki/File:Desktop_computer_bus_bandwidths.svg">[source]</a>
@@ -135,8 +144,8 @@
     <h2>Mobile SoC (System on Chip)</h2>
     <h6>Example of Qualcomm&copy; Snapdragon&trade; 8+ Gen 1 (2022)</h6>
 
-    <img src="diagrams/SoC.drawio.svg" style="max-width: 60%;"/>
-    
+    <img src="diagrams/SoC.drawio.svg" class="r-stretch"/>
+
     <footer>
       <a href="https://www.forbes.com/sites/marcochiappetta/2021/11/30/snapdragon-8-gen-1-the-qualcomm-mobile-platform-that-will-power-next-gen-android-flagship-phones/">[source]</a>
     </footer>
@@ -144,7 +153,7 @@
 
   <section data-markdown>
     <textarea data-template>
-    ## Mobile vs Desktop
+    ## Mobile vs Desktop: Initial Observations
     - No unified memory in the desktop world.
       - Think ahead about CPU&leftrightarrow;GPU data transfer.
       - PCIe is the weak link (~10 times slower than the GPU VRAM bandwidth).
@@ -160,7 +169,7 @@
 <!-- Hardware overview: CPU  -->
 <section>
   <section>
-    <h2>Programmable hardware overview</h2>
+    <h2>Programmable Hardware Overview</h2>
     <strong>C</strong>entral <strong>P</strong>rocessor <strong>U</strong>nits
   </section>
 
@@ -178,12 +187,12 @@
   </section>
 
   <section>
-    <h2>Common architectures</h2>
-    <table>
+    <h2>Common Architectures</h2>
+    <table class="smaller">
       <thead>
         <tr>
-          <td style="color: gray">Architecture family</td>
-          <td><strong>x86</strong></td>
+          <td style="color: gray">Family</td>
+          <td><strong>x86(_64)</strong></td>
           <td><strong>ARM</strong></td>
         </tr>
       </thead>
@@ -225,25 +234,130 @@
 
   <section data-markdown>
     <textarea data-template>
-    ## Speed
-    - *Clock cycle*: atomic value of elapsed time.
-    - *Instruction latency*: number of cycles taken to execute it.
-    - Modern CPUs are complex machines and may execute multiple instructions of the same program at a time.
-    - Binary arithmetic instructions latency (operating with registers content):
-      - Integer addition/subtraction: as fast as 1 cycle. <!-- .element: class="smaller" -->
-      - Integer multiplication and floating-point operations: more. <!-- .element: class="smaller" -->
-      - Division: even more. <!-- .element: class="smaller" -->
-      - Multiplication-accumulation is typically a single instruction and is done faster than a multiplication and an addition separately. <!-- .element: class="smaller" -->
+    ## Characterizing Execution Speed
+     - *Clock cycle*: atomic value of elapsed time.
+     - *Latency* of a given instruction: number of cycles the *CPU pipeline* takes to execute the instruction.
+     - Modern CPUs are complex machines and may execute multiple instructions of the same program at a time.
+       - *Out-of-Order Execution*: if the next instruction in a program does not depend on the result of the current instruction, it can be issued to the pipeline prior to finishing the current instruction.
+       - Instruction latencies are context-dependent but measurable.
     </textarea>
   </section>
-</section>
 
+  <section>
+    <h2>Arithmetic Instructions Latency</h2>
+    <ul>
+      Operands are registers.
+      <li>Integer addition/subtraction: as fast as 1 cycle.</li>
+      <li>Integer multiplication and floating-point math: a few cycles.</li>
+      <li>Division: more.
+        <ul class="smaller">
+          <li>Example: 12 cycles per 32 bit integer division on Intel Skylake.</li>
+        </ul>
+      </li>
+      <li>Multiplication-accumulation is typically a single 3-op instruction and is done faster than a multiplication and an addition separately.</li>
+      <li>Complex floating-point math instructions (e.g. <span class="code">sqrt</span>) may have content-dependent latency.</li>
+    </ul>
+
+    <footer>
+      Unofficial but highly acknowledged sources for <a href="https://www.agner.org/optimize/instruction_tables.pdf">x86</a> and <a href="https://hardwarebug.org/2014/05/15/cortex-a7-instruction-cycle-timings/">ARM</a>.
+    </footer>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+    ## Memory Instructions Latency
+     - To speak about loads/stores latency, we need to introduce the *memory model* first.
+     - *Locality of reference:* a program usually accesses the same set of addresses over a short period of time.
+       - Does not always hold for imaging/ML-related compute code.
+     - *Memory hierarchy*:
+       1. **Register file**: small amount of immediately available memory directly usable by the compute units (~1 Kbyte).
+       2. **Cache**: fast on-chip memory, usually of multiple levels (L1, L2, ...), from a few Kbytes to Mbytes each.
+       3. **Main memory** (RAM): slow external memory, from Gbytes to Tbytes.
+     - From imaging algorithms perspective, the caches are ridiculously small.
+     - *Cache miss*: event occurring when the requested memory address is not found in a given cache.
+     - *Stalled thread* is the one getting a cache miss.
+    </textarea>
+  </section>
+
+  <section>
+    <h2>Memory Instructions Latency: Some Figures</h2>
+    <div style="display: flex;">
+      <div>
+        Intel Core i7-9xxx:
+        <ul>
+          <li>L1 cache: 64 Kbytes per physical core, latency: <strong>4&nbsp;cycles</strong>
+            <ul class="smaller">
+              <li>32 Kbytes instruction cache + 32 Kbytes data cache</li>
+            </ul>
+          </li>
+          <li>L2 cache: 256 Kbytes per physical core, latency: <strong>11&nbsp;cycles</strong></li>
+          <li>L3 cache: 8 Mbytes shared across cores, latency: <strong>39&nbsp;cycles</strong></li>
+          <li>RAM latency: <strong>107&nbsp;cycles</strong>.</li>
+        </ul>
+      </div>
+      <div>
+        A synthetic example:
+        <img src="images/memory_model.png" style="margin: 0em">
+      </div>
+    </div>
+    <footer>
+      <a href="https://www.aristeia.com/TalkNotes/ACCU2011_CPUCaches.pdf">[source]</a>
+      <a href="https://cs.brown.edu/courses/csci1310/2020/assign/labs/lab4.html">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Cache Misses: What To Do?</h2>
+
+    <blockquote>
+      Regardless of how well you optimize your compute code, if you do not take care of caching, your will experience a dramatic performance drop.
+    </blockquote>
+    <ul style="list-style-type: none">
+      <li><em>Cache line</em>: atomic amount of data readable/writable to the cache and main memory.
+        <ul>
+          <li>Usually 64 bytes.</li>
+        </ul>
+      </li>
+      <li><strong>Caching-friendly practices:</strong>
+        <ol>
+          <li>Coalesced memory access</li>
+          <li>Prefetching
+            <ul class="smaller">
+              <li>x86 CPUs detect linear forward and backward traversal patterns of a cache line <span class="code">n</span> and automatically prefetch line <span class="code">n+1</span>/<span class="code">n-1</span>.</li>
+              <li>ARM instruction set contains a <em>prefetch instruction</em> allowing to give a hint to the memory management hardware to preload a cache line containing a specific address ahead of processing.</li>
+            </ul>
+          </li>
+        </ol>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Instructions Latency: Recap</h2>
+    <ul>
+      <li>Basic compute instructions are bounded in latency by a few tens of cycles.</li>
+      <li>Memory instructions have a largely variable latency depending where the requested data is in the memory hierarchy.
+        <ul>
+          <li>If you don't take care of it, the performance of your program drops quickly.</li>
+          <li>Coalesced predicable linear access is the most caching-friendly way to hit the data.</li>
+        </ul>
+      </li>
+    </ul>
+    <footer>
+      <q>It takes so long to get there [to main memory], your program will not run at any reasonable speed if you go to main memory.</q>
+      <a href="https://youtu.be/WDIkqP4JbkE">[Scott Meyers]</a>
+    </footer>
+  </section>
+
+</section>
 
 </div>
 </div>
 
 <script>
   Reveal.initialize({
+    width: 1900,
+    height: 1080,
     hash: true,
     plugins: [ RevealMarkdown ]
   });
