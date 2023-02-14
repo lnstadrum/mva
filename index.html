@@ -170,7 +170,7 @@
 <section>
   <section>
     <h2>Programmable Hardware Overview</h2>
-    <strong>C</strong>entral <strong>P</strong>rocessor <strong>U</strong>nits
+    <strong>C</strong>entral <strong>P</strong>rocessing <strong>U</strong>nits
   </section>
 
   <section data-markdown>
@@ -205,7 +205,7 @@
         <tr>
           <td style="color: gray">Usage</td>
           <td>Mainly desktop/data center.<br/>Weak mobile market penetration</td>
-          <td>Mainly embedded.<br/>About to change: <a href="https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/">NVidia Grace</a></td>
+          <td>Mainly embedded.<br/>About to change: <a href="https://www.nvidia.com/en-us/data-center/grace-cpu-superchip/">Nvidia Grace</a></td>
         </tr>
         <tr>
           <td style="color: gray">Key brand names</td>
@@ -273,17 +273,17 @@
        1. **Register file**: small amount of immediately available memory directly usable by the compute units (~1 Kbyte).
        2. **Cache**: fast on-chip memory, usually of multiple levels (L1, L2, ...), from a few Kbytes to Mbytes each.
        3. **Main memory** (RAM): slow external memory, from Gbytes to Tbytes.
-     - From imaging algorithms perspective, the caches are ridiculously small.
+     - From imaging algorithms perspective, caches are ridiculously small.
      - *Cache miss*: event occurring when the requested memory address is not found in a given cache.
      - *Stalled thread* is the one getting a cache miss.
     </textarea>
   </section>
 
   <section>
-    <h2>Memory Instructions Latency: Some Figures</h2>
+    <h2>Memory Access Speed: Some Figures</h2>
     <div style="display: flex;">
       <div>
-        Intel Core i7-9xxx:
+        <h5>Intel Core i7-9xxx:</h5>
         <ul>
           <li>L1 cache: 64 Kbytes per physical core, latency: <strong>4&nbsp;cycles</strong>
             <ul class="smaller">
@@ -296,7 +296,7 @@
         </ul>
       </div>
       <div>
-        A synthetic example:
+        <h5>A synthetic example:</h5>
         <img src="images/memory_model.png" style="margin: 0em">
       </div>
     </div>
@@ -308,19 +308,19 @@
 
   <section>
     <h2>Cache Misses: What To Do?</h2>
-
-    <blockquote>
-      Regardless of how well you optimize your compute code, if you do not take care of caching, your will experience a dramatic performance drop.
-    </blockquote>
     <ul style="list-style-type: none">
-      <li><em>Cache line</em>: atomic amount of data readable/writable to the cache and main memory.
+      <li><em>Cache line</em>: atomic amount of data readable/writable to cache and main memory.
         <ul>
           <li>Usually 64 bytes.</li>
         </ul>
       </li>
       <li><strong>Caching-friendly practices:</strong>
         <ol>
-          <li>Coalesced memory access</li>
+          <li>Coalesced memory access
+            <ul class="smaller">
+              <li>If you read from/write to a particular address in memory, make sure the next read/write will hit an adjacent address in as many cases as possible.</li>
+            </ul>
+          </li>
           <li>Prefetching
             <ul class="smaller">
               <li>x86 CPUs detect linear forward and backward traversal patterns of a cache line <span class="code">n</span> and automatically prefetch line <span class="code">n+1</span>/<span class="code">n-1</span>.</li>
@@ -335,10 +335,10 @@
   <section>
     <h2>Instructions Latency: Recap</h2>
     <ul>
-      <li>Basic compute instructions are bounded in latency by a few tens of cycles.</li>
+      <li>Basic compute instructions are bounded in latency by a few cycles.</li>
       <li>Memory instructions have a largely variable latency depending where the requested data is in the memory hierarchy.
         <ul>
-          <li>If you don't take care of it, the performance of your program drops quickly.</li>
+          <li>Regardless of how well you optimize your compute code, if you do not take care of caching, your will experience a dramatic performance drop.</li>
           <li>Coalesced predicable linear access is the most caching-friendly way to hit the data.</li>
         </ul>
       </li>
@@ -347,6 +347,131 @@
       <q>It takes so long to get there [to main memory], your program will not run at any reasonable speed if you go to main memory.</q>
       <a href="https://youtu.be/WDIkqP4JbkE">[Scott Meyers]</a>
     </footer>
+  </section>
+</section>
+
+
+<!-- Hardware overview: GPU  -->
+<section>
+  <section>
+    <h2>Programmable Hardware Overview</h2>
+    <strong>G</strong><span>aming</span> <strong>P</strong>rocessing <strong>U</strong>nits
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+    ## GPU: Brief History
+     - In early times (~2000 AD), GPUs were <em>rasterization engines</em>.
+       - They sample images pixel by pixel from a vector description of a renderable content, e.g. set of 3D vertices, their attributes (such as texture coordinates), light source positions and textures).
+       - Suitable for real-time visualization and... gaming.
+       - They featured *fixed graphics pipeline* (no programmability).
+     - *Pixel shaders*: small programs executed on per-pixel basis to compute its resulting color value (~2001).
+       - Beginning of per-pixel thread granularity, hardly achievable on CPUs.
+       - Nvidia GeForce 3 (NV20) and AMD Radeon R100
+     - *Microsoft DirectX* and *OpenGL* standards have driven the GPU evolution towards programmability.
+       - *GPGPU*: General-Purpose computing on Graphics Processing Units
+    </textarea>
+  </section>
+
+  <section>
+    <h2>Programmable Shading Applied to Lighting</h2>
+    <img class="r-stretch" src="images/unreal_shading_example.jpg"/>
+    <footer style="margin: 0">
+      <a href="https://www.nvidia.com/content/gtc-2010/pdfs/2275_gtc2010.pdf">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>GPU Compute Evolution: Back Then</h2>
+    <img src="images/nvidia_gflops_evolution.png" class="r-stretch"/>
+    <p class="smaller">*AlexNet was trained on two GTX580 <a href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">[Krizhevsky et al.]</a></p>
+    
+    <footer style="margin: 0">
+      <a href="https://www.researchgate.net/publication/272434636_Accelerating_the_Detection_of_Spectral_Bands_by_ANN-ED_on_a_GPU#pf2">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>GPU Compute Evolution: These Days</h2>
+    <ul>
+      <li><em>Quadro RTX 6000</em> (Turing architecture, 2018):
+        <ul style="list-style-type: none">
+          <li><strong>16.3 TFLOPs</strong> single precision FP</li>
+          <li><strong>32.6 TFLOPs</strong> half precision FP</li>
+          <li><strong>130.5 TFLOPs</strong> half precision FP with TensorCores</li>
+        </ul>
+      </li>
+      <li><em>Tesla A100</em> (Ampere architecture, 2020):
+        <ul style="list-style-type: none">
+          <li><strong>19.5 TFLOPs</strong> single precision FP</li>
+          <li><strong>156 TFLOPs</strong> single precision FP with TensorCores</li>
+          <li><strong>312 TFLOPs</strong> half precision FP with TensorCores</li>
+        </ul>
+      </li>
+      <li><em>Tesla H100</em> (Hopper architecture, 2022):
+        <ul style="list-style-type: none">
+          <li><strong>48 TFLOPs</strong> single precision FP</li>
+          <li><strong>400 TFLOPs</strong> single precision FP with TensorCores</li>
+          <li><strong>800 TFLOPs</strong> half precision FP with TensorCores</li>
+          <li><strong>1600 TFLOPs</strong> 8-bit FP with TensorCores</li>
+        </ul>
+      </li>
+    </ul>
+    <footer style="margin: 0">
+      <a href="https://developer.nvidia.com/blog/nvidia-turing-architecture-in-depth/">[source]</a>
+      <a href="https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/">[source]</a>
+      <a href="https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>GPU Programming</h2>
+    <ul>
+      <li>
+        <strong>CUDA</strong> (Computing Using Digital Accelerators)
+        <ul>
+          <li>Nvidia GPU-specific API</li>
+          <li>C/C++-like language and a compilation toolchain</li>
+          <li>The toolchain is bundled with precompiled libraries implementing common algorithms (cuBLAS, cuDNN, cuFFT, etc.)</li>
+          <li>Main compute backend for modern ML: PyTorch and TensorFlow rely heavily on cuDNN/cuBLAS</li>
+        </ul>
+      </li>
+      <li>
+        <strong>ROCm</strong> (Radeon Open Compute)
+        <ul>
+          <li>AMD GPU-specific</li>
+          <li>Similar to CUDA, but open-source</li>
+        </ul>
+      </li>
+      <li>
+        <strong>OpenCL</strong>
+        <ul>
+          <li>Parallel programming framework to build programs from a C-like language</li>
+          <li>Usable with a wide hardware spectrum, including GPUs, CPUs, FPGAs and other kinds of accelerators</li>
+          <li>Hardware vendor-agnostic</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>GPU Programming: GLSL</h2>
+    <ul>
+      <li>
+        <strong>GLSL</strong> (OpenGL Shading Language)
+        <ul>
+          <li>GPU vendor-agnostic, usable with literally any modern GPU</li>
+          <li>
+            Originally computer graphics-specific, now enables general purpose parallel programming (<em>compute shaders</em>)
+            <ul>
+              <li>Compute shaders are not available everywhere</li>
+            </ul>
+          </li>
+          <li>Requires a host environment (OpenGL, Vulkan, WebGL)</li>
+          <li>Typically compiled at run time by the GPU driver to the GPU-specific machine code</li>
+        </ul>
+      </li>
+    </ul>
   </section>
 
 </section>
