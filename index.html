@@ -3,14 +3,13 @@
   <link rel="stylesheet" href="revealjs/dist/reveal.css">
   <link rel="stylesheet" href="revealjs/dist/theme/white.css">
   <script src="revealjs/dist/reveal.js"></script>
-  <script src="revealjs/plugin/markdown/markdown.js"></script>
 
   <style>
   .reveal {
     --r-heading-text-transform: '';
   }
   .smaller {
-    font-size: 0.8em;
+    font-size: 0.9em;
   }
   .code {
     font-family: monospace;
@@ -42,11 +41,11 @@
 <section>
   <section>
     <h1>Imaging and ML software from a low-level programming perspective</h1>
-    <h5 style="color: red;">{WORK IN PROGRESS}</h5>
+    <h3 style="color: red;">{WORK IN PROGRESS}</h3>
   </section>
 
   <section>
-    <h2>Imaging Software in Production: Basics</h2>
+    <h2>Imaging Software in Production: Context</h2>
     <img src="diagrams/Intro.drawio.svg" class="r-stretch"/>
   </section>
 
@@ -61,7 +60,7 @@
   </section>
 
   <section>
-    <h2>ML in production: market</h2>
+    <h2>ML in Production: Market Dynamics</h2>
     <img src="diagrams/MLOps.drawio.svg" class="r-stretch"/>
     <footer>
       <a href="https://techcrunch.com/2021/11/01/octoml-raises-85m-for-it-for-its-machine-learning-acceleration-platform/">[source]</a>
@@ -75,12 +74,23 @@
 
   <section data-markdown>
     <textarea data-template>
+    ## Compute-bound vs I/O-bound Algorithms
+    - *Arithmetic density* of an algorithm: number of arithmetic operations performed per byte read from or written to the system memory.
+    - *Compute-bound algorithms* have high arithmetic density. Their performance is limited by the compute speed.
+    - *I/O-bound* or *memory-bound* algorithms have low arithmetic density. Their performance is limited by the memory bandwidth.
+
+    > Contrary to popular belief, modern imaging problems and their ML implementations tend to be **I/O-bound**.
+    </textarea>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
     ## From Computer Vision to Image Processing
-    - Semantic gap
-    - Vision models usually map small images to low-dimensional spaces.
-      - ILSVRC classic models take a 224*224 image to output a 1000-long vector.
-    - Image restoration algorithms typically take and produce images of the same high resolution.
-      - Standard smartphone camera photo resolution is 4000*3000.
+    Real-world image restoration algorithms (ML or not) are highly demanding in memory bandwidth.
+     - Vision models usually map small images to low-dimensional spaces.
+       - ILSVRC tradition is a 224*224 input and a 1000-long vector output.
+     - Image restoration algorithms usually take and produce images of the same high resolution.
+       - Standard smartphone camera photo resolution is 4000*3000.
     </textarea>
   </section>
 </section>
@@ -170,7 +180,7 @@
 <section>
   <section>
     <h2>Programmable Hardware Overview</h2>
-    <strong>C</strong>entral <strong>P</strong>rocessing <strong>U</strong>nits
+    <h3>Central Processing Units</h3>
   </section>
 
   <section data-markdown>
@@ -285,14 +295,14 @@
       <div>
         <h5>Intel Core i7-9xxx:</h5>
         <ul>
-          <li>L1 cache: 64 Kbytes per physical core, latency: <strong>4&nbsp;cycles</strong>
+          <li>L1 cache: 64 Kbytes per physical core, <strong>4&nbsp;cycles</strong>
             <ul class="smaller">
               <li>32 Kbytes instruction cache + 32 Kbytes data cache</li>
             </ul>
           </li>
-          <li>L2 cache: 256 Kbytes per physical core, latency: <strong>11&nbsp;cycles</strong></li>
-          <li>L3 cache: 8 Mbytes shared across cores, latency: <strong>39&nbsp;cycles</strong></li>
-          <li>RAM latency: <strong>107&nbsp;cycles</strong>.</li>
+          <li>L2 cache: 256 Kbytes per physical core, <strong>11&nbsp;cycles</strong></li>
+          <li>L3 cache: 8 Mbytes shared across cores, <strong>39&nbsp;cycles</strong></li>
+          <li>RAM: <strong>107&nbsp;cycles</strong>.</li>
         </ul>
       </div>
       <div>
@@ -333,7 +343,7 @@
   </section>
 
   <section>
-    <h2>Instructions Latency: Recap</h2>
+    <h2>Instructions Latency: Takeaways</h2>
     <ul>
       <li>Basic compute instructions are bounded in latency by a few cycles.</li>
       <li>Memory instructions have a largely variable latency depending where the requested data is in the memory hierarchy.
@@ -348,6 +358,18 @@
       <a href="https://youtu.be/WDIkqP4JbkE">[Scott Meyers]</a>
     </footer>
   </section>
+
+  <section>
+    <h2>Programmable Hardware Overview</h2>
+    <h3>Single Instruction Multiple Data</h3>
+    <h3 style="color: red;">{TO DO}</h3>
+  </section>
+
+  <section>
+    <h2>Programmable Hardware Overview</h2>
+    <h3>Multithreading</h3>
+    <h3 style="color: red;">{TO DO}</h3>
+  </section>
 </section>
 
 
@@ -355,14 +377,14 @@
 <section>
   <section>
     <h2>Programmable Hardware Overview</h2>
-    <strong>G</strong><span>aming</span> <strong>P</strong>rocessing <strong>U</strong>nits
+    <h3>Gaming Processing Units</h3>
   </section>
 
   <section data-markdown>
     <textarea data-template>
     ## GPU: Brief History
      - In early times (~2000 AD), GPUs were <em>rasterization engines</em>.
-       - They sample images pixel by pixel from a vector description of a renderable content, e.g. set of 3D vertices, their attributes (such as texture coordinates), light source positions and textures).
+       - They sample images pixel by pixel from a vector description of renderable content, e.g. set of 3D vertices, their attributes (such as texture coordinates), light source positions and textures.
        - Suitable for real-time visualization and... gaming.
        - They featured *fixed graphics pipeline* (no programmability).
      - *Pixel shaders*: small programs executed on per-pixel basis to compute its resulting color value (~2001).
@@ -374,7 +396,34 @@
   </section>
 
   <section>
-    <h2>Programmable Shading Applied to Lighting</h2>
+    <h2>Simplified Graphic Pipeline</h2>
+    <img class="r-stretch" src="images/graphic_pipeline.jpg"/>
+    <ul class="smaller">
+      <li><em>Vertex shader</em> transforms 3D positions of vertices into 2D on-screen coordinates.
+        <ul class="smaller">
+          <li>Uses camera position, orientation and intrinsic parameters (e.g. field of view).</li>
+          <li>May also compute <em>lighting parameters</em> (e.g., reflected light intensity and color) based on the light source positions and per-vertex normals.</li>
+        </ul>
+      </li>
+      <li><em>Rasterizer</em> samples <em>fragments</em> out of <em>primitives</em> (e.g., triangles) in the 2D coordinate space.
+        <ul class="smaller">
+          <li>It interpolates issued vertex attributes, e.g. <em>texture coordinates</em> and lighting parameters.</li>
+        </ul>
+      </li>
+      <li><em>Fragment shader</em> uses the per-fragment interpolated attributes to get pixel colors.
+        <ul class="smaller">
+          <li>Usually, it samples a texture at given texture coordinates to get the color value.</li>
+          <li>May use lighting parameters to modulate the resulting color.</li>
+        </ul>
+      </li>
+    </ul>
+    <footer style="margin: 0">
+      <a href="https://stanford.edu/class/ee267/lectures/lecture2.pdf">[source]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Programmable Shading Example: Lighting</h2>
     <img class="r-stretch" src="images/unreal_shading_example.jpg"/>
     <footer style="margin: 0">
       <a href="https://www.nvidia.com/content/gtc-2010/pdfs/2275_gtc2010.pdf">[source]</a>
@@ -385,7 +434,7 @@
     <h2>GPU Compute Evolution: Back Then</h2>
     <img src="images/nvidia_gflops_evolution.png" class="r-stretch"/>
     <p class="smaller">*AlexNet was trained on two GTX580 <a href="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf">[Krizhevsky et al.]</a></p>
-    
+
     <footer style="margin: 0">
       <a href="https://www.researchgate.net/publication/272434636_Accelerating_the_Detection_of_Spectral_Bands_by_ANN-ED_on_a_GPU#pf2">[source]</a>
     </footer>
@@ -425,53 +474,243 @@
   </section>
 
   <section>
-    <h2>GPU Programming</h2>
+    <h2>Programming and Memory Model</h2>
+    <ul>
+      <li>GPUs achieve high throughput by a massive parallelization, which requires designing software in a particular way.</li>
+      <li>Let us took a look at the memory first.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>A GPU From Inside (Nvidia Ampere)</h2>
+    <img src="images/nvidia_ampere.png" class="r-stretch"/>
+    <br/>
+    <small>Things to point out: PCIe interface, HBM2 (<em>global memory</em>), SMs with shared L2 cache, NVLink and MIG</small>
+  </section>
+
+  <section>
+    <h2>Closer Look at Ampere Streaming Multiprocessor</h2>
+    <img src="images/nvidia_ampere_sm.png" class="r-stretch"/>
+    <br/>
+    <small>Things to point out: instruction caches, L1 data cache, register file, compute units, warp schedulers.</small>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+     ## Memory Model (Ampere Numbers)
+      1. **Register file**: 64 Kbytes &times; 4 per SM
+      2. **L1 data cache**: 192 Kbytes per SM
+         - L1 can be used as *shared memory* directly managed by the program.
+      3. **L2 data cache**: 40 Mbytes shared across SMs
+      4. **Global memory**: ~40~/80 Gbytes for A100
+      5. Anything beyond goes through PCIe to/from the host.
+
+      &rightarrow; Same principles hold: latency grows with size, coalesced access and locality is the key performance factors.
+    </textarea>
+  </section>
+
+  <section>
+    <h2>Common Programming Frameworks</h2>
     <ul>
       <li>
-        <strong>CUDA</strong> (Computing Using Digital Accelerators)
+        <strong>CUDA</strong> (Compute Unified Device Architecture)
         <ul>
-          <li>Nvidia GPU-specific API</li>
+          <li>Parallel computing platform for Nvidia GPUs</li>
           <li>C/C++-like language and a compilation toolchain</li>
-          <li>The toolchain is bundled with precompiled libraries implementing common algorithms (cuBLAS, cuDNN, cuFFT, etc.)</li>
-          <li>Main compute backend for modern ML: PyTorch and TensorFlow rely heavily on cuDNN/cuBLAS</li>
+          <li>Bundled with precompiled computing libraries (cuBLAS, cuDNN, cuFFT, etc.)
+            <ul>
+              <li>Mainly closed source except for CUTLASS</li>
+            </ul>
+          </li>
+          <li>Primary compute backend for modern ML: PyTorch and TensorFlow rely heavily on cuDNN/cuBLAS</li>
         </ul>
       </li>
       <li>
         <strong>ROCm</strong> (Radeon Open Compute)
         <ul>
-          <li>AMD GPU-specific</li>
-          <li>Similar to CUDA, but open-source</li>
-        </ul>
-      </li>
-      <li>
-        <strong>OpenCL</strong>
-        <ul>
-          <li>Parallel programming framework to build programs from a C-like language</li>
-          <li>Usable with a wide hardware spectrum, including GPUs, CPUs, FPGAs and other kinds of accelerators</li>
-          <li>Hardware vendor-agnostic</li>
+          <li>Parallel computing platform for AMD GPUs</li>
+          <li>Offers multiple programming models: OpenCL, HIP and OpenMP</li>
+          <li>Open-source</li>
+          <li>Officially supports a subset of the AMD GPU product line</li>
         </ul>
       </li>
     </ul>
   </section>
 
   <section>
-    <h2>GPU Programming: GLSL</h2>
+    <h2>Common Programming Frameworks</h2>
     <ul>
       <li>
-        <strong>GLSL</strong> (OpenGL Shading Language)
+        <strong>OpenCL</strong> (Apple &rightarrow; <em>Khronos Group</em>)
         <ul>
-          <li>GPU vendor-agnostic, usable with literally any modern GPU</li>
-          <li>
-            Originally computer graphics-specific, now enables general purpose parallel programming (<em>compute shaders</em>)
+          <li>Parallel computing software stack to build programs from a C/C++-like language</li>
+          <li>Usable within a wide hardware spectrum, including GPUs, CPUs, FPGAs and other kinds of accelerators</li>
+        </ul>
+      </li>
+      <li>
+        <strong>GLSL</strong> (OpenGL Shading Language, <em>Khronos Group</em>)
+        <ul>
+          <li>C-like programming language supported by a vast spectrum of graphics hardware</li>
+          <li>Originally computer graphics-specific, now enables general purpose parallel programming (<em>compute shaders</em>)
             <ul>
               <li>Compute shaders are not available everywhere</li>
             </ul>
           </li>
-          <li>Requires a host environment (OpenGL, Vulkan, WebGL)</li>
-          <li>Typically compiled at run time by the GPU driver to the GPU-specific machine code</li>
+          <li>Requires a host framework (OpenGL, Vulkan, WebGL)</li>
+          <li>Typically compiled at run time by the GPU driver into GPU-specific machine code</li>
         </ul>
       </li>
     </ul>
+  </section>
+
+  <section>
+    <h2>SIMT: Single Instruction Multiple Threads</h2>
+    <ul>
+     <li>The programs (shaders, kernels) are written in a way to handle a single data entry all over the lifecycle.
+       <ul class="smaller">
+         <li>Typical granularity: 1 thread per pixel.</li>
+       </ul>
+     </li>
+     <li>The hardware and its driver take care of threading, providing almost complete abstraction of it.
+       <ul class="smaller">
+         <li>To specify the amount of work, threads are grouped into <em>blocks</em> (<em>workgroups</em>), which form a <em>grid</em>.</li>
+         <li>Threads in the same block can exchange information efficiently: they have access to the same low-latency shared memory space.
+           <ul>
+             <li>In practice, the HW runs them close to each other, in time and memory.</li>
+           </ul>
+         </li>
+         <li>The grid configuration is set when launching the program.</li>
+      </ul>
+      </li>
+     <li>At runtime, the same instruction is issued in multiple threads, <em>possibly</em> running in parallel.</li>
+    </ul>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+    ## CUDA Kernel Example
+     - The program that follows evaluates expression <code>a * x<sub>i</sub> + y<sub>i</sub></code>
+       - <code>x</code> and <code>y</code> are large arrays of the same size.
+       - <code>a</code> is a constant.
+     - It illustrates a typical GPU compute workflow.
+       - Preparing the data in CPU main memory. <!-- -->
+       - Uploading the data to GPU global memory.
+       - Launching the computing kernel.
+       - Fetching the computation result back for further processing.
+     - Compiling and executing (linux, requires CUDA toolkit installed):
+    ```
+    nvcc ./saxpy.cu -o saxpy
+    ./saxpy
+    ```
+    </textarea>
+  </section>
+
+  <section>
+    <h2>CUDA Kernel Example</h2>
+    <code style="font-size: 0.8em;">
+<pre>
+#include &lt;cstdio&gt;
+#include &lt;vector&gt;
+
+__global__ void saxpy(int n, float a, float *x, float *y) {                   <em class="fragment" data-fragment-index="6">// &lt;-- The kernel function executed on GPU</em>
+  int i = blockIdx.x*blockDim.x + threadIdx.x;                                <em class="fragment" data-fragment-index="7">// Find out current thread position</em>
+  if (i &lt; n) y[i] = a * x[i] + y[i];                                          <em class="fragment" data-fragment-index="8">// Compute the result</em>
+}
+
+int main(void) {
+  const int N = 1 &lt;&lt; 20;
+  std::vector&lt;float&gt; x(N), y(N);                                              <em class="fragment" data-fragment-index="1">// Declare storage for test data (CPU memory)</em>
+
+  for (int i = 0; i &lt; N; i++) {                                               <em class="fragment" data-fragment-index="2">// Fill test data buffers with some numbers (in CPU memory)</em>
+    x[i] = 1.0f;
+    y[i] = 2.0f;
+  }
+
+  float *d_x, *d_y;                                                           <em class="fragment" data-fragment-index="3">// Declare pointers in GPU memory</em>
+  cudaMalloc(&d_x, N * sizeof(float));                                        <em class="fragment" data-fragment-index="3">// Allocate GPU buffer to store x</em>
+  cudaMalloc(&d_y, N * sizeof(float));                                        <em class="fragment" data-fragment-index="3">// Allocate GPU buffer to store y</em>
+
+  cudaMemcpy(d_x, x.data(), N * sizeof(float), cudaMemcpyHostToDevice);       <em class="fragment" data-fragment-index="4">// Copy x from CPU memory to GPU</em>
+  cudaMemcpy(d_y, y.data(), N * sizeof(float), cudaMemcpyHostToDevice);       <em class="fragment" data-fragment-index="4">// Copy y from CPU memory to GPU</em>
+
+  saxpy&lt;&lt;&lt;(N+255)/256, 256&gt;&gt;&gt;(N, 2.0f, d_x, d_y);                             <em class="fragment" data-fragment-index="5">// Launch the kernel, 1 thread per element, 256 thread per block</em>
+
+  cudaMemcpy(y.data(), d_y, N*sizeof(float), cudaMemcpyDeviceToHost);         <em class="fragment" data-fragment-index="9">// Copy the result back from GPU</em>
+
+  float maxError = 0.0f;                                                      <em class="fragment" data-fragment-index="10">// Check the result</em>
+  for (int i = 0; i &lt; N; i++)
+    maxError = max(maxError, abs(y[i]-4.0f));
+  printf("Max error: %f\n", maxError);
+
+  cudaFree(d_x);                                                              <em class="fragment" data-fragment-index="11">// Free the GPU buffer</em>
+  cudaFree(d_y);                                                              <em class="fragment" data-fragment-index="11">// Free the GPU buffer</em>
+}
+</pre>
+    </code>
+    <footer style="margin: 0">
+      <a href="https://developer.nvidia.com/blog/easy-introduction-cuda-c-and-c/">[source]</a>
+    </footer>
+  </section>
+
+<!--
+  <section>
+    <h2>SIMT: CUDA Specifics</h2>
+    <ul>
+     <li>1024 threads per block max on modern hardware (<em>CUDA Compute Capability</em> 3.5+).
+      <ul class="smaller">
+        <li>2<sup>31</sup> blocks per grid max</li>
+      </ul>
+     </li>
+     <li>A <em>warp</em> is a group of 32 threads running next to each other.
+      <ul class="smaller">
+        <li><em>Divergent threads</em> in the same warp is generally bad for the performance.</li>
+        <li><em>Independent Thread Scheduling</em>: starting from Volta (2017), every thread has its own <em>program counter</em>, so the threads in the same warp can diverge.</li>
+      </ul>
+    </li>
+    </ul>
+    <footer>
+      <a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities">[CUDA CC]</a>
+    </footer>
+  </section>
+-->
+
+  <section>
+    <h2>Occupancy</h2>
+    <ul style="list-style-type: none">
+      <li>Performance is conditioned by the number of threads effectively running in parallel. It depends on:
+        <ul>
+        <li><em>Register pressure</em>: amount of register memory required per thread vs hardware capacity
+          <ul class="smaller">
+            <li>Modern CUDA: 255 regular registers per thread max.</li>
+            <li><em>Register spilling</em>: if the register file size is not sufficient to store all the registers, the data may be stored in global memory.</li>
+            <li>Register spilling is not permitted in all SIMT implementations and often causes a dramatic slowdown.</li>
+          </ul>
+        </li>
+        <li>Amount shared memory per thread block vs the hardware capacity
+          <ul class="smaller">
+            <li>CUDA: 48 to 163 Kbytes depending on Compute Capability</li>
+            <li>OpenGL ES 3.1 Compute Shader: 16 Kbytes as a minimum required by the standard</li>
+          </ul>
+        </li>
+        <li>SM capabilities (e.g. max number of warps per SM)</li>
+        <li>Total number of SMs</li>
+        </ul>
+      </li>
+    </ul>
+    <footer>
+      <a href="https://registry.khronos.org/OpenGL/specs/es/3.1/es_spec_3.1.pdf">[OpenGL ES 3.1 Spec]</a>
+    </footer>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+    ## SIMT vs SIMD?
+     - SIMD and SIMT do not oppose to each other and are rather complementary.
+       - SIMT is scalable, SIMD is not.
+     - Efficient CPU implementations of compute-demanding algorithms usually rely on SIMD and multithreading.
+     - CUDA has SIMD instructions.
+     - GLSL incorporates vector and matrix operations with up to 4 elements. Their implementations may rely on SIMD instructions.
+    </textarea>
   </section>
 
 </section>
@@ -479,13 +718,19 @@
 </div>
 </div>
 
+<!-- Loading plugins here, zoom fails otherwise -->
+<script src="revealjs/plugin/markdown/markdown.js"></script>
+<script src="revealjs/plugin/zoom/zoom.js"></script>
 <script>
-  Reveal.initialize({
-    width: 1900,
-    height: 1080,
-    hash: true,
-    plugins: [ RevealMarkdown ]
-  });
+  (function(){
+    Reveal.initialize({
+      width: 1900,
+      height: 1080,
+      hash: true,
+      plugins: [ RevealMarkdown, RevealZoom ]
+    });
+  })()
 </script>
+
 </body>
 </html>
