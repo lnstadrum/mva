@@ -2,6 +2,7 @@
 <head>
   <link rel="stylesheet" href="revealjs/dist/reveal.css">
   <link rel="stylesheet" href="revealjs/dist/theme/white.css">
+  <link rel="stylesheet" href="revealjs/plugin/highlight/monokai.css">
   <script src="revealjs/dist/reveal.js"></script>
 
   <style>
@@ -17,11 +18,17 @@
 
   li {
     line-height: 1.1;
-    margin-top: 0.5em;
+    margin: 0.3em 0;
+  }
+
+  /* nested list vertical gutter */
+  li:last-child {
+    margin-bottom: 0.5em;
   }
 
   /* nested list indent */
   li > ul {
+    font-size: 0.9em;
     padding-left: 0;
   }
 
@@ -29,6 +36,17 @@
     text-align: right;
     font-size: 0.5em;
     margin-top: 3em;
+  }
+
+  .flex {
+    display: flex;
+  }
+  .flex-col {
+    flex: 1 1 100%;
+  }
+
+  div.highlight, blockquote {
+    border-left: 20px solid #ddd; border-radius: 20px; padding-left: 20px; margin-left: -40px;
   }
   </style>
 </head>
@@ -102,8 +120,8 @@
   <ol>
     <li style="color: lightgray">Introduction</li>
 
-    <li>Programmable Hardware Overview
-      <ul class="smaller">
+    <li>Programmable hardware overview
+      <ul>
         <li>CPU</li>
         <li>GPU
           <!-- <ul>
@@ -117,8 +135,8 @@
       </ul>
     </li>
 
-    <li>Deploying to production
-      <ul class="smaller">
+    <li>Pushing ML models to production
+      <ul>
         <li>Algorithm characterization</li>
         <li>Common ML model optimization techniques
           <ul>
@@ -170,7 +188,7 @@
     - Modern x86 desktop CPUs also include integrated graphics (iGPU) without dedicated memory.
     - Digital Signal Processors (DSP) are very common in mobile SoCs.
       - *Edge computing*: processing data right on the device it comes from.
-      - NPU is a marketing name/abstraction level on top of the DSP.
+      - NPU is a marketing name/abstraction level on top of the DSPs.
     </textarea>
   </section>
 </section>
@@ -260,7 +278,7 @@
       <li>Integer addition/subtraction: as fast as 1 cycle.</li>
       <li>Integer multiplication and floating-point math: a few cycles.</li>
       <li>Division: more.
-        <ul class="smaller">
+        <ul>
           <li>Example: 12 cycles per 32 bit integer division on Intel Skylake.</li>
         </ul>
       </li>
@@ -291,12 +309,12 @@
 
   <section>
     <h2>Memory Access Speed: Some Figures</h2>
-    <div style="display: flex;">
+    <div class="flex">
       <div>
         <h5>Intel Core i7-9xxx:</h5>
         <ul>
           <li>L1 cache: 64 Kbytes per physical core, <strong>4&nbsp;cycles</strong>
-            <ul class="smaller">
+            <ul>
               <li>32 Kbytes instruction cache + 32 Kbytes data cache</li>
             </ul>
           </li>
@@ -327,12 +345,12 @@
       <li><strong>Caching-friendly practices:</strong>
         <ol>
           <li>Coalesced memory access
-            <ul class="smaller">
+            <ul>
               <li>If you read from/write to a particular address in memory, make sure the next read/write will hit an adjacent address in as many cases as possible.</li>
             </ul>
           </li>
           <li>Prefetching
-            <ul class="smaller">
+            <ul>
               <li>x86 CPUs detect linear forward and backward traversal patterns of a cache line <span class="code">n</span> and automatically prefetch line <span class="code">n+1</span>/<span class="code">n-1</span>.</li>
               <li>ARM instruction set contains a <em>prefetch instruction</em> allowing to give a hint to the memory management hardware to preload a cache line containing a specific address ahead of processing.</li>
             </ul>
@@ -398,20 +416,20 @@
   <section>
     <h2>Simplified Graphic Pipeline</h2>
     <img class="r-stretch" src="images/graphic_pipeline.jpg"/>
-    <ul class="smaller">
+    <ul>
       <li><em>Vertex shader</em> transforms 3D positions of vertices into 2D on-screen coordinates.
-        <ul class="smaller">
+        <ul>
           <li>Uses camera position, orientation and intrinsic parameters (e.g. field of view).</li>
           <li>May also compute <em>lighting parameters</em> (e.g., reflected light intensity and color) based on the light source positions and per-vertex normals.</li>
         </ul>
       </li>
       <li><em>Rasterizer</em> samples <em>fragments</em> out of <em>primitives</em> (e.g., triangles) in the 2D coordinate space.
-        <ul class="smaller">
+        <ul>
           <li>It interpolates issued vertex attributes, e.g. <em>texture coordinates</em> and lighting parameters.</li>
         </ul>
       </li>
       <li><em>Fragment shader</em> uses the per-fragment interpolated attributes to get pixel colors.
-        <ul class="smaller">
+        <ul>
           <li>Usually, it samples a texture at given texture coordinates to get the color value.</li>
           <li>May use lighting parameters to modulate the resulting color.</li>
         </ul>
@@ -447,13 +465,13 @@
         <ul style="list-style-type: none">
           <li><strong>16.3 TFLOPs</strong> single precision FP</li>
           <li><strong>32.6 TFLOPs</strong> half precision FP</li>
-          <li><strong>130.5 TFLOPs</strong> half precision FP with TensorCores</li>
+          <li><strong>130.5 TFLOPs</strong> half precision FP with TensorCores <span style="color: red">(new)</span></li>
         </ul>
       </li>
       <li><em>Tesla A100</em> (Ampere architecture, 2020):
         <ul style="list-style-type: none">
           <li><strong>19.5 TFLOPs</strong> single precision FP</li>
-          <li><strong>156 TFLOPs</strong> single precision FP with TensorCores</li>
+          <li><strong>156 TFLOPs</strong> single precision FP with TensorCores <span style="color: red">(new)</span></li>
           <li><strong>312 TFLOPs</strong> half precision FP with TensorCores</li>
         </ul>
       </li>
@@ -462,7 +480,7 @@
           <li><strong>48 TFLOPs</strong> single precision FP</li>
           <li><strong>400 TFLOPs</strong> single precision FP with TensorCores</li>
           <li><strong>800 TFLOPs</strong> half precision FP with TensorCores</li>
-          <li><strong>1600 TFLOPs</strong> 8-bit FP with TensorCores</li>
+          <li><strong>1600 TFLOPs</strong> 8-bit FP with TensorCores <span style="color: red">(new)</span></li>
         </ul>
       </li>
     </ul>
@@ -504,13 +522,11 @@
       3. **L2 data cache**: 40 Mbytes shared across SMs
       4. **Global memory**: ~40~/80 Gbytes for A100
       5. Anything beyond goes through PCIe to/from the host.
-
-      &rightarrow; Same principles hold: latency grows with size, coalesced access and locality is the key performance factors.
     </textarea>
   </section>
 
   <section>
-    <h2>Common Programming Frameworks</h2>
+    <h2>Common GPU Programming Frameworks</h2>
     <ul>
       <li>
         <strong>CUDA</strong> (Compute Unified Device Architecture)
@@ -538,7 +554,7 @@
   </section>
 
   <section>
-    <h2>Common Programming Frameworks</h2>
+    <h2>Common GPU Programming Frameworks</h2>
     <ul>
       <li>
         <strong>OpenCL</strong> (Apple &rightarrow; <em>Khronos Group</em>)
@@ -566,30 +582,36 @@
   <section>
     <h2>SIMT: Single Instruction Multiple Threads</h2>
     <ul>
-     <li>The programs (shaders, kernels) are written in a way to handle a single data entry all over the lifecycle.
-       <ul class="smaller">
-         <li>Typical granularity: 1 thread per pixel.</li>
-       </ul>
-     </li>
-     <li>The hardware and its driver take care of threading, providing almost complete abstraction of it.
-       <ul class="smaller">
-         <li>To specify the amount of work, threads are grouped into <em>blocks</em> (<em>workgroups</em>), which form a <em>grid</em>.</li>
-         <li>Threads in the same block can exchange information efficiently: they have access to the same low-latency shared memory space.
-           <ul>
-             <li>In practice, the HW runs them close to each other, in time and memory.</li>
-           </ul>
-         </li>
-         <li>The grid configuration is set when launching the program.</li>
-      </ul>
+      <li style="list-style: none;">SIMT is a parallel program execution model GPUs are built upon.</li>
+      <li style="list-style: none;">
+        <div class="highlight">
+          It provides a hardware abstraction convenient for both programmers and hardware manufacturers to decouple the program source code and device capabilities in a scalable way.
+        </div>
       </li>
-     <li>At runtime, the same instruction is issued in multiple threads, <em>possibly</em> running in parallel.</li>
+      <li>The programs (<em>shaders</em>, <em>kernels</em>) are written in a way to handle a single data entry all over the lifecycle.
+        <ul>
+          <li>Typical granularity: 1 thread per pixel.</li>
+        </ul>
+      </li>
+      <li>The hardware and its driver take care of threading.
+        <ul>
+          <li>To specify the amount of work, threads are grouped into <em>blocks</em> (<em>workgroups</em>), which form a <em>grid</em>.</li>
+          <li>Threads in the same block can exchange information efficiently: they have access to the same low-latency shared memory space.
+            <ul>
+              <li>In practice, the HW runs them close to each other, in time and memory.</li>
+            </ul>
+          </li>
+          <li>The grid configuration is set when launching the program.</li>
+        </ul>
+        </li>
+      <li>At runtime, the same instruction is issued in multiple threads, <em>possibly</em> running in parallel.</li>
     </ul>
   </section>
 
   <section data-markdown>
     <textarea data-template>
     ## CUDA Kernel Example
-     - The program that follows evaluates expression <code>a * x<sub>i</sub> + y<sub>i</sub></code>
+     - The program that follows evaluates expression <code>a*x<sub>i</sub>+y<sub>i</sub></code>
        - <code>x</code> and <code>y</code> are large arrays of the same size.
        - <code>a</code> is a constant.
      - It illustrates a typical GPU compute workflow.
@@ -607,13 +629,12 @@
 
   <section>
     <h2>CUDA Kernel Example</h2>
-    <code style="font-size: 0.8em;">
-<pre>
+    <pre class="stretch"><code data-trim data-noescape style="font-size: 0.9em; line-height: 1.2;" class="cpp">
 #include &lt;cstdio&gt;
 #include &lt;vector&gt;
 
 __global__ void saxpy(int n, float a, float *x, float *y) {                   <em class="fragment" data-fragment-index="6">// &lt;-- The kernel function executed on GPU</em>
-  int i = blockIdx.x*blockDim.x + threadIdx.x;                                <em class="fragment" data-fragment-index="7">// Find out current thread position</em>
+  int i = blockIdx.x * blockDim.x + threadIdx.x;                              <em class="fragment" data-fragment-index="7">// Find out current thread position</em>
   if (i &lt; n) y[i] = a * x[i] + y[i];                                          <em class="fragment" data-fragment-index="8">// Compute the result</em>
 }
 
@@ -635,44 +656,21 @@ int main(void) {
 
   saxpy&lt;&lt;&lt;(N+255)/256, 256&gt;&gt;&gt;(N, 2.0f, d_x, d_y);                             <em class="fragment" data-fragment-index="5">// Launch the kernel, 1 thread per element, 256 thread per block</em>
 
-  cudaMemcpy(y.data(), d_y, N*sizeof(float), cudaMemcpyDeviceToHost);         <em class="fragment" data-fragment-index="9">// Copy the result back from GPU</em>
+  cudaMemcpy(y.data(), d_y, N * sizeof(float), cudaMemcpyDeviceToHost);       <em class="fragment" data-fragment-index="9">// Copy the result back from GPU</em>
 
   float maxError = 0.0f;                                                      <em class="fragment" data-fragment-index="10">// Check the result</em>
   for (int i = 0; i &lt; N; i++)
-    maxError = max(maxError, abs(y[i]-4.0f));
+    maxError = max(maxError, abs(y[i] - 4.0f));
   printf("Max error: %f\n", maxError);
 
   cudaFree(d_x);                                                              <em class="fragment" data-fragment-index="11">// Free the GPU buffer</em>
   cudaFree(d_y);                                                              <em class="fragment" data-fragment-index="11">// Free the GPU buffer</em>
 }
-</pre>
-    </code>
+    </code></pre>
     <footer style="margin: 0">
       <a href="https://developer.nvidia.com/blog/easy-introduction-cuda-c-and-c/">[source]</a>
     </footer>
   </section>
-
-<!--
-  <section>
-    <h2>SIMT: CUDA Specifics</h2>
-    <ul>
-     <li>1024 threads per block max on modern hardware (<em>CUDA Compute Capability</em> 3.5+).
-      <ul class="smaller">
-        <li>2<sup>31</sup> blocks per grid max</li>
-      </ul>
-     </li>
-     <li>A <em>warp</em> is a group of 32 threads running next to each other.
-      <ul class="smaller">
-        <li><em>Divergent threads</em> in the same warp is generally bad for the performance.</li>
-        <li><em>Independent Thread Scheduling</em>: starting from Volta (2017), every thread has its own <em>program counter</em>, so the threads in the same warp can diverge.</li>
-      </ul>
-    </li>
-    </ul>
-    <footer>
-      <a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities">[CUDA CC]</a>
-    </footer>
-  </section>
--->
 
   <section>
     <h2>Occupancy</h2>
@@ -680,39 +678,217 @@ int main(void) {
       <li>Performance is conditioned by the number of threads effectively running in parallel. It depends on:
         <ul>
         <li><em>Register pressure</em>: amount of register memory required per thread vs hardware capacity
-          <ul class="smaller">
-            <li>Modern CUDA: 255 regular registers per thread max.</li>
+          <ul>
+            <li>Modern CUDA: 255 regular registers per thread max</li>
             <li><em>Register spilling</em>: if the register file size is not sufficient to store all the registers, the data may be stored in global memory.</li>
             <li>Register spilling is not permitted in all SIMT implementations and often causes a dramatic slowdown.</li>
           </ul>
         </li>
         <li>Amount shared memory per thread block vs the hardware capacity
-          <ul class="smaller">
-            <li>CUDA: 48 to 163 Kbytes depending on Compute Capability</li>
+          <ul>
+            <li>CUDA: 48 to 163 Kbytes depending on CUDA Compute Capability</li>
             <li>OpenGL ES 3.1 Compute Shader: 16 Kbytes as a minimum required by the standard</li>
           </ul>
         </li>
-        <li>SM capabilities (e.g. max number of warps per SM)</li>
+        <li>SM capabilities (e.g. max number of warps per SM)
+          <ul>
+            <li><em>Warp</em> (CUDA) is a group of 32 consecutive threads.</li>
+            <li>CUDA: 1024 threads per thread block max</li>
+            <li>OpenGL ES 3.1 Compute Shader: 128 threads per <em>workgroup</em> as a minimum required by the standard</li>
+          </ul>
+        </li>
         <li>Total number of SMs</li>
         </ul>
       </li>
     </ul>
     <footer>
       <a href="https://registry.khronos.org/OpenGL/specs/es/3.1/es_spec_3.1.pdf">[OpenGL ES 3.1 Spec]</a>
+      <a href="https://docs.nvidia.com/cuda/cuda-c-programming-guide/index.html#compute-capabilities">[CUDA CC]</a>
     </footer>
   </section>
 
+  <section>
+    <h2>Coalesced vs Non-coalesced Access</h2>
+    <ul style="list-style-type: none;">
+      <li>Consider a CUDA kernel going through a big square matrix of size <code>N</code>.</li>
+      <li></li>
+    </ul>
+
+    <div class="flex">
+      <div class="flex-col">
+        <h5>Version 1:</h5>
+        <pre><code data-trim data-noescape class="cpp">
+__global__ void matrix_traversal(float *mat, int N) {
+  int col = blockIdx.x * 32 + threadIdx.x;
+  int row = blockIdx.y * 32 + threadIdx.y;
+  float element = mat[col * N + row];
+  // ...
+}
+        </code></pre>
+      </div>
+      <div class="flex-col">
+        <h5>Version 2:</h5>
+        <pre><code data-trim data-noescape class="cpp">
+__global__ void matrix_traversal(float *mat, int N) {
+  int col = blockIdx.x * 32 + threadIdx.x;
+  int row = blockIdx.y * 32 + threadIdx.y;
+  float element = mat[row * N + col];
+  // ...
+}
+        </code></pre>
+      </div>
+    </div>
+
+    <h4>Kernel launch code:</h4>
+    <pre><code data-trim data-noescape class="cpp">
+      const dim3 threads(32, 32);       // processing the matrix by tiles of 32*32 elements
+      const dim3 blocks(N/32, N/32);    // assuming N is a multiple of 32
+      matrix_traversal&lt;&lt;&lt; blocks, threads &gt;&gt;&gt;(matrixDataDevicePtr, N);
+    </code></pre>
+
+    <p>Question: which implementation is more efficient (and, of course, why)?</p>
+  </section>
+
+  <section>
+    <h2>Coalesced vs Non-coalesced Access</h2>
+    <div class="flex">
+      <div class="flex-col">
+        <h5>Version 1:</h5>
+        <pre><code data-trim data-noescape class="cpp">
+__global__ void matrix_traversal(float *mat, int N) {
+  int col = blockIdx.x * 32 + threadIdx.x;
+  int row = blockIdx.y * 32 + threadIdx.y;
+  float element = mat[col * N + row];       <strong>//&lt;---- LOAD</strong>
+  // ...
+}
+        </code></pre>
+      </div>
+      <div class="flex-col">
+        <h5>Version 2:</h5>
+        <pre><code data-trim data-noescape class="cpp">
+__global__ void matrix_traversal(float *mat, int N) {
+  int col = blockIdx.x * 32 + threadIdx.x;
+  int row = blockIdx.y * 32 + threadIdx.y;
+  float element = mat[row * N + col];       <strong>//&lt;---- LOAD</strong>
+  // ...
+}
+        </code></pre>
+      </div>
+    </div>
+
+    <ul>
+      <li>Nvidia GPU cache line size: 128 bytes (a hardware constant)</li>
+      <li>Global memory access is serialized.</li>
+    </ul>
+    <p></p>
+
+    <div class="flex">
+      <div style="flex: 1 1 100%; text-align: left">
+        <ul>
+          <li class="fragment" data-fragment-index="1">Relative addresses per thread:<br/> <code>[0, 4N, 8N, ..., 32N]</code></li>
+          <li class="fragment" data-fragment-index="2">Large <code>N</code>: every address falls into a different cache line</li>
+          <li class="fragment" data-fragment-index="3"><strong>32</strong> cache lines to load per warp</li>
+          <li class="fragment" data-fragment-index="4">This is slow.</li>
+        </ul>
+      </div>
+      <div style="flex: 1 1 100%; text-align: left">
+        <ul>
+          <li class="fragment" data-fragment-index="1">Relative addresses per thread:<br/> <code>[0, 4, 8, ..., 124]</code></li>
+          <li class="fragment" data-fragment-index="2">All the addresses are in the same cache line</li>
+          <li class="fragment" data-fragment-index="3"><strong>1</strong> cache line to load per warp</li>
+          <li class="fragment" data-fragment-index="4">This is fast.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Non-coalesced Access: What to Do?</h2>
+    <ul style="list-style-type: none">
+      <li>It is not always possible to change the way the memory is accessed.</li>
+      <li>A common shared memory transposition trick:
+        <ul>
+          <li>A tile is read in a coalesced manner and put into a fast shared memory buffer.</li>
+          <li>The transposition is done when reading from it.</li>
+          <li>Every thread receives the same value as before.</li>
+        </ul>
+      </li>
+    </ul>
+    <p></p>
+    <h5>Version 1 upgrade:</h5>
+    <pre><code data-trim data-noescape class="cpp">
+__global__ void matrix_traversal(float *mat, int N) {
+  <strong>__shared__</strong> float buffer[32 * 32];
+  int startCol = blockIdx.x * 32;
+  int startRow = blockIdx.y * 32;
+
+  int i = (startCol + threadIdx.y) * N + (startRow + threadIdx.x);
+  buffer[threadIdx.y * 32 + threadIdx.x] = mat[i];    // now coalesced
+  __syncthreads();                                    // waiting for all threads in the same block to pass through
+  float element = buffer[threadIdx.x * 32 + threadIdx.y];
+  // ...
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>Divergent threads</h2>
+    <pre><code data-trim data-noescape class="cpp">
+  // ...
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (mat[i] > 0) {
+    // Branch A
+  }
+  else {
+    // Branch B
+  }
+  // ...
+    </code></pre>
+    <ul>
+      <li>If condition <code>mat[i] > 0</code> or its opposite holds for the entire warp, mostly no impact on performance.</li>
+      <li>If condition <code>mat[i] > 0</code> holds for some threads but not for others in the same warp, both branches A and B will be executed using an "active threads mask", inducing a performance penalty.</li>
+    </ul>
+    &rightarrow; Common recommendation: align data-dependent execution paths with warp boundaries
+    <footer>
+      <a href="https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf">[Volta whitepaper], p.26</a>
+    </footer>
+  </section>
+
+  <section>
+    <h3>... Indeed, GPU optimization goes far beyond.</h3>
+    <img src="images/here_be_ninjas.png" class="r-frame">
+    <footer>
+      <a href="https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf">[Stephen Jones, 2017]</a>
+    </footer>
+  </section>
+
+  <!--
   <section data-markdown>
     <textarea data-template>
     ## SIMT vs SIMD?
      - SIMD and SIMT do not oppose to each other and are rather complementary.
        - SIMT is scalable, SIMD is not.
      - Efficient CPU implementations of compute-demanding algorithms usually rely on SIMD and multithreading.
-     - CUDA has SIMD instructions.
+     - Speculatively, warp in CUDA is a SIMD block.
+     - CUDA has built-in SIMD intrinsics and datatypes.
      - GLSL incorporates vector and matrix operations with up to 4 elements. Their implementations may rely on SIMD instructions.
     </textarea>
   </section>
+  -->
 
+  <section data-markdown>
+    <textarea data-template>
+    ## GPU: Takeaways
+     - GPUs are widely available massively parallel programmable machines.
+     - GPU execution model is SIMT.
+       - Threads &rightarrow; Warps &rightarrow; Blocks &rightarrow; Grid (CUDA language)
+     - The amount of parallelism is characterized by occupancy.
+     - Memory hierarchy: same principles hold (*"fast is small"*).
+       - Coalesced access is critical for performance.
+       - L1 cache can be used as program-manageable shared memory.
+       - Mind data-dependent divergence.
+    </textarea>
+  </section>
 </section>
 
 </div>
@@ -721,13 +897,14 @@ int main(void) {
 <!-- Loading plugins here, zoom fails otherwise -->
 <script src="revealjs/plugin/markdown/markdown.js"></script>
 <script src="revealjs/plugin/zoom/zoom.js"></script>
+<script src="revealjs/plugin/highlight/highlight.js"></script>
 <script>
   (function(){
     Reveal.initialize({
       width: 1900,
       height: 1080,
       hash: true,
-      plugins: [ RevealMarkdown, RevealZoom ]
+      plugins: [ RevealMarkdown, RevealZoom, RevealHighlight ]
     });
   })()
 </script>
