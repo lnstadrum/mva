@@ -45,7 +45,11 @@
     flex: 1 1 100%;
   }
 
-  div.highlight, blockquote {
+  .no-bullets {
+    list-style-type: none !important;
+  }
+
+  .highlight, blockquote {
     border-left: 20px solid #ddd; border-radius: 20px; padding-left: 20px; margin-left: -40px;
   }
   </style>
@@ -71,6 +75,7 @@
     <textarea data-template>
     ## Imaging Software in Production
     - Designing production-ready imaging algorithms and NN architectures is a challenge.
+       - ML models are not easier to put in production just because they do not lead to segfaults (normally).
     - **Speed**, **memory** and **energy footprints** are constrained.
     - Algorithmic optimization incurs performance losses.
     - Knowing your hardware at a low level helps.
@@ -122,30 +127,13 @@
 
     <li>Programmable hardware overview
       <ul>
-        <li>CPU</li>
-        <li>GPU
-          <!-- <ul>
-            <li>History: from fixed graphic pipeline to modern programmable GPU</li>
-            <li>Memory model overview</li>
-            <li>SIMT vs SIMD</li>
-            <li>CUDA, OpenCL, GLSL</li>
-          </ul> -->
-        </li>
-        <li>DSP</li>
+        <li>Central Processing Units</li>
+        <li>Graphic Processing Units</li>
+        <li>Digital Signal Processors</li>
       </ul>
     </li>
 
-    <li>Pushing ML models to production
-      <ul>
-        <li>Algorithm characterization</li>
-        <li>Common ML model optimization techniques
-          <ul>
-            <li>Quantization and QAT</li>
-            <li>Pruning</li>
-          </ul>
-        </li>
-      </ul>
-    </li>
+    <li>Preparing ML models for production</li>
 
     <li>Conclusion</li>
   </ol>
@@ -182,6 +170,7 @@
   <section data-markdown>
     <textarea data-template>
     ## Mobile vs Desktop: Initial Observations
+    - They are quite similar.
     - No unified memory in the desktop world.
       - Think ahead about CPU&leftrightarrow;GPU data transfer.
       - PCIe is the weak link (~10 times slower than the GPU VRAM bandwidth).
@@ -336,7 +325,7 @@
 
   <section>
     <h2>Cache Misses: What To Do?</h2>
-    <ul style="list-style-type: none">
+    <ul class="no-bullets">
       <li><em>Cache line</em>: atomic amount of data readable/writable to cache and main memory.
         <ul>
           <li>Usually 64 bytes.</li>
@@ -462,21 +451,21 @@
     <h2>GPU Compute Evolution: These Days</h2>
     <ul>
       <li><em>Quadro RTX 6000</em> (Turing architecture, 2018):
-        <ul style="list-style-type: none">
+        <ul class="no-bullets">
           <li><strong>16.3 TFLOPs</strong> single precision FP</li>
           <li><strong>32.6 TFLOPs</strong> half precision FP</li>
           <li><strong>130.5 TFLOPs</strong> half precision FP with TensorCores <span style="color: red">(new)</span></li>
         </ul>
       </li>
       <li><em>Tesla A100</em> (Ampere architecture, 2020):
-        <ul style="list-style-type: none">
+        <ul class="no-bullets">
           <li><strong>19.5 TFLOPs</strong> single precision FP</li>
           <li><strong>156 TFLOPs</strong> single precision FP with TensorCores <span style="color: red">(new)</span></li>
           <li><strong>312 TFLOPs</strong> half precision FP with TensorCores</li>
         </ul>
       </li>
       <li><em>Tesla H100</em> (Hopper architecture, 2022):
-        <ul style="list-style-type: none">
+        <ul class="no-bullets">
           <li><strong>48 TFLOPs</strong> single precision FP</li>
           <li><strong>400 TFLOPs</strong> single precision FP with TensorCores</li>
           <li><strong>800 TFLOPs</strong> half precision FP with TensorCores</li>
@@ -494,8 +483,8 @@
   <section>
     <h2>Programming and Memory Model</h2>
     <ul>
-      <li>GPUs achieve high throughput by a massive parallelization, which requires designing software in a particular way.</li>
-      <li>Let us took a look at the memory first.</li>
+      <li>GPUs achieve high throughput by a massive parallelization, which requires designing the software in a particular way.</li>
+      <li>Let us took a look at memory first.</li>
     </ul>
   </section>
 
@@ -531,7 +520,7 @@
       <li>
         <strong>CUDA</strong> (Compute Unified Device Architecture)
         <ul>
-          <li>Parallel computing platform for Nvidia GPUs</li>
+          <li>Parallel computing platform/SDK for Nvidia GPUs</li>
           <li>C/C++-like language and a compilation toolchain</li>
           <li>Bundled with precompiled computing libraries (cuBLAS, cuDNN, cuFFT, etc.)
             <ul>
@@ -544,7 +533,7 @@
       <li>
         <strong>ROCm</strong> (Radeon Open Compute)
         <ul>
-          <li>Parallel computing platform for AMD GPUs</li>
+          <li>Parallel computing platform/SDK for AMD GPUs</li>
           <li>Offers multiple programming models: OpenCL, HIP and OpenMP</li>
           <li>Open-source</li>
           <li>Officially supports a subset of the AMD GPU product line</li>
@@ -615,7 +604,7 @@
        - <code>x</code> and <code>y</code> are large arrays of the same size.
        - <code>a</code> is a constant.
      - It illustrates a typical GPU compute workflow.
-       - Preparing the data in CPU main memory. <!-- -->
+       - Preparing the data in CPU main memory.
        - Uploading the data to GPU global memory.
        - Launching the computing kernel.
        - Fetching the computation result back for further processing.
@@ -674,7 +663,7 @@ int main(void) {
 
   <section>
     <h2>Occupancy</h2>
-    <ul style="list-style-type: none">
+    <ul class="no-bullets">
       <li>Performance is conditioned by the number of threads effectively running in parallel. It depends on:
         <ul>
         <li><em>Register pressure</em>: amount of register memory required per thread vs hardware capacity
@@ -709,7 +698,7 @@ int main(void) {
 
   <section>
     <h2>Coalesced vs Non-coalesced Access</h2>
-    <ul style="list-style-type: none;">
+    <ul class="no-bullets">
       <li>Consider a CUDA kernel going through a big square matrix of size <code>N</code>.</li>
       <li></li>
     </ul>
@@ -804,7 +793,7 @@ __global__ void matrix_traversal(float *mat, int N) {
 
   <section>
     <h2>Non-coalesced Access: What to Do?</h2>
-    <ul style="list-style-type: none">
+    <ul class="no-bullets">
       <li>It is not always possible to change the way the memory is accessed.</li>
       <li>A common shared memory transposition trick:
         <ul>
@@ -855,26 +844,12 @@ __global__ void matrix_traversal(float *mat, int N) {
   </section>
 
   <section>
-    <h3>... Indeed, GPU optimization goes far beyond.</h3>
+    <h3>... and there is a lot more.</h3>
     <img src="images/here_be_ninjas.png" class="r-frame">
     <footer>
       <a href="https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf">[Stephen Jones, 2017]</a>
     </footer>
   </section>
-
-  <!--
-  <section data-markdown>
-    <textarea data-template>
-    ## SIMT vs SIMD?
-     - SIMD and SIMT do not oppose to each other and are rather complementary.
-       - SIMT is scalable, SIMD is not.
-     - Efficient CPU implementations of compute-demanding algorithms usually rely on SIMD and multithreading.
-     - Speculatively, warp in CUDA is a SIMD block.
-     - CUDA has built-in SIMD intrinsics and datatypes.
-     - GLSL incorporates vector and matrix operations with up to 4 elements. Their implementations may rely on SIMD instructions.
-    </textarea>
-  </section>
-  -->
 
   <section data-markdown>
     <textarea data-template>
@@ -891,8 +866,68 @@ __global__ void matrix_traversal(float *mat, int N) {
   </section>
 </section>
 
-</div>
-</div>
+
+<!-- Hardware overview: DSP  -->
+<section>
+  <section>
+    <h2>Programmable Hardware Overview</h2>
+    <h3>Digital Signal Processors</h3>
+  </section>
+
+  <section>
+    <h2>DSP: Overview (Hexagon V67 Example)</h2>
+    <ul>
+      <li>Implements a specific SIMD instruction set
+        <ul>
+          <li><em>VLIW (Very Long Instruction Word)</em>: grouping independent instructions in packets for parallel execution at compile time.</li>
+        </ul>
+      </li>
+      <li>May run multiple hardware threads</li>
+      <li>Handles integer, fixed- and floating-point compute, as well as special data types (e.g. complex numbers)</li>
+      <li>Instruction set includes "special-purpose" application-specific instructions
+        <ul>
+          <li>Video coding</li>
+          <li>Software-defined radio</li>
+          <li>Checksum computation</li>
+          <li>...</li>
+        </ul>
+      </li>
+      <li>Building programs requires a specific SDK</li>
+    </ul>
+    <footer>
+      <a href="https://developer.qualcomm.com/qfile/67417/80-n2040-45_b_qualcomm_hexagon_v67_programmer_reference_manual.pdf">[Hexagon V67 reference manual]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Benchmarks?</h2>
+    <ul class="no-bullets">
+      <li>Public vanilla FLOPs benchmarks are hard to find.</li>
+      <li>From a ML perspective: <a href="https://ai-benchmark.com/ranking_detailed.html">AI benchmark</a> or <a href="https://developer.qualcomm.com/sites/default/files/docs/snpe/benchmark_mobilenet_ssd.html">MobileNet SSD  SNPE sample</a>
+        <ul>
+          <li>DSP is much beefier compared to GPU and CPU.</li>
+          <li>It is essentially a fixed-point machine though: it requires <em>quantized models</em>.</li>
+          <li>Usable by means of Qualcomm Snapdragon Neural Processing Engine (SNPE) SDK and Android NN (e.g., TensorFlow Lite)</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+</section>
+
+
+<!-- Preparing ML models for production  -->
+<section>
+  <section>
+    <h2>Preparing ML models for production</h2>
+    <h3 style="color: red;">{TO DO}</h3>
+  </section>
+</section>
+
+
+</div>  <!-- class="reveal" -->
+</div>  <!-- class="slides" -->
+
+<!-- END OF CONTENT -->
 
 <!-- Loading plugins here, zoom fails otherwise -->
 <script src="revealjs/plugin/markdown/markdown.js"></script>
