@@ -49,6 +49,10 @@
     list-style-type: none !important;
   }
 
+  .arrow-bullets {
+    list-style-type: "→ " !important;
+  }
+
   .highlight, blockquote {
     border-left: 20px solid #ddd; border-radius: 20px; padding-left: 20px; margin-left: -40px;
   }
@@ -81,7 +85,7 @@
     - Designing production-ready imaging algorithms and NN architectures is a challenge.
        - ML models are not easier to put in production just because they do not lead to segfaults (normally).
     - **Speed**, **memory** and **energy footprints** are constrained.
-    - Algorithmic optimization incurs performance losses.
+    - Algorithmic optimization may involve performance/quality tradeoffs.
     - Knowing your hardware at a low level helps.
     </textarea>
   </section>
@@ -923,7 +927,43 @@ __global__ void matrix_traversal(float *mat, int N) {
 <section>
   <section>
     <h2>Preparing ML models for production</h2>
-    <h3 style="color: red;">{TO DO}</h3>
+  </section>
+
+  <section data-markdown>
+    <textarea data-template>
+      ## Preparing ML models for production
+       - Common situation: a model is too big for a given production environment. <!-- .element: class="no-bullets"  -->
+         - Its inference is too slow or does not run at all due to a backend memory constraint.
+       - Solution: get a simpler model... <!-- .element: class="no-bullets"  -->
+         - Redesign the architecture by hand and train from scratch
+           - Use *separable (depthwise+pointwise)* convolutions [(Xception, [Chollet, 2017])](https://arxiv.org/abs/1610.02357) or *group convolutions* [(ResNeXt, [Xie et al. 2016])](https://arxiv.org/pdf/1611.05431.pdf)
+         - Train a smaller model by *knowledge distillation* [[Hinton et al., 2015]](https://arxiv.org/abs/1503.02531)
+         - Use a pruning algorithm [&rightarrow; Awesome Pruning](https://github.com/he-y/Awesome-Pruning)
+         - Use a constrained neural architecture search (NAS) algorithm [&rightarrow; Awesome AutoDL](https://github.com/D-X-Y/Awesome-AutoDL)
+    </textarea>
+  </section>
+
+  <section>
+    <h2>Preparing ML models for production</h2>
+    <ul>
+      <li class="no-bullets">Another common situation: the inference backend is fixed-point.</li>
+      <li class="arrow-bullets">It requires quantized NN weights and applies quantization to intermediate activations over a given number of bits per entry,
+        <ul>
+          <li>up to a linear transformation,</li>
+          <li>on per-layer or per-channel basis.</li>
+        </ul>
+      </li>
+      <li>Example: Hexagon DSP, Snapdragon 8 Gen 1 (2021), the best you can get from SNPE:
+        <ul>
+          <li>16 bits per activation value</li>
+          <li>8 bits per weight value</li>
+          <li>32 bits per bias value</li>
+        </ul>
+      </li>
+    </ul>
+    <footer>
+      <a href="https://developer.qualcomm.com/sites/default/files/docs/snpe/tools.html#tools_snpe-dlc-quantize">[SNPE SDK docs]</a>
+    </footer>
   </section>
 </section>
 
