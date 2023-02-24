@@ -48,9 +48,14 @@
   .no-bullets {
     list-style-type: none !important;
   }
-
   .arrow-bullets {
-    list-style-type: "→ " !important;
+    list-style-type: "→  " !important;
+  }
+  .check-bullets {
+    list-style-type: "✓ " !important;
+  }
+  .cross-bullets {
+    list-style-type: "✗ " !important;
   }
 
   .highlight, blockquote {
@@ -931,9 +936,9 @@ __global__ void matrix_traversal(float *mat, int N) {
 
   <section data-markdown>
     <textarea data-template>
-      ## Preparing ML models for production
+      ## Production constraints
        - Common situation: a model is too big for a given production environment. <!-- .element: class="no-bullets"  -->
-         - Its inference is too slow or does not run at all due to a backend memory constraint.
+         - Inference on the target hardware/environment takes too much time or does not run at all.
        - Solution: get a simpler model... <!-- .element: class="no-bullets"  -->
          - Redesign the architecture by hand and train from scratch
            - Use *separable (depthwise+pointwise)* convolutions [(Xception, [Chollet, 2017])](https://arxiv.org/abs/1610.02357) or *group convolutions* [(ResNeXt, [Xie et al. 2016])](https://arxiv.org/pdf/1611.05431.pdf)
@@ -944,10 +949,10 @@ __global__ void matrix_traversal(float *mat, int N) {
   </section>
 
   <section>
-    <h2>Preparing ML models for production</h2>
+    <h2>Production constraints</h2>
     <ul>
-      <li class="no-bullets">Another common situation: the inference backend is fixed-point.</li>
-      <li class="arrow-bullets">It requires quantized NN weights and applies quantization to intermediate activations over a given number of bits per entry,
+      <li class="no-bullets">Another common situation: the target hardware is fixed-point.</li>
+      <li class="arrow-bullets">It requires quantized NN weights and applies quantization to activations over a given number of bits per entry,
         <ul>
           <li>up to a linear transformation,</li>
           <li>on per-layer or per-channel basis.</li>
@@ -956,13 +961,80 @@ __global__ void matrix_traversal(float *mat, int N) {
       <li>Example: Hexagon DSP, Snapdragon 8 Gen 1 (2021), the best you can get from SNPE:
         <ul>
           <li>16 bits per activation value</li>
-          <li>8 bits per weight value</li>
+          <li>8 bits per weight value
+            <ul class="cross-bullets">
+              <li>Insufficient for raw image restoration algorithms</li>
+            </ul>
+          </li>
           <li>32 bits per bias value</li>
+        </ul>
+      </li>
+      <li class="no-bullets">Fixed-point model is a strict constraint in this example.</li>
+      <li class="no-bullets">In general, fixed-point models are faster (at inference time), have reduced inference memory footprint and take less storage.</li>
+    </ul>
+    <footer>
+      <a href="https://developer.qualcomm.com/sites/default/files/docs/snpe/tools.html#tools_snpe-dlc-quantize">[SNPE SDK docs]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Tensor quantization</h2>
+    <p>
+      <em>Quantization</em> of a tensor: computing its approximate integer-valued representation in a given range.
+    </p>
+    <p>
+      Example: FP32 tensor &rightarrow; INT8 tensor, <code>min</code> and <code>max</code> values
+    </p>
+    <img src="images/tensor_quantization.png" class="r-stretch"/>
+    <ul class="smaller">
+      <li>Linear operations (namely, convolution) can be computed using integer arithmetics. The result is then stretched according to min and max values of input and kernel.</li>
+      <li>Non-linear activation functions require specific implementations (usually straightforward).</li>
+    </ul>
+    <footer>
+      <a href="https://developer.nvidia.com/blog/achieving-fp32-accuracy-for-int8-inference-using-quantization-aware-training-with-tensorrt/">[Quantization in TensorRT, Nvidia]</a>
+    </footer>
+  </section>
+
+  <section>
+    <h2>Model quantization</h2>
+    <ul>
+      <li class="no-bullets"><em>Quantization</em>: producing fixed-point model parameters while keeping inference accuracy.</li>
+      <li><strong>Post-training quantization</strong>: adjusting parameters of an already trained model.
+        <ul>
+          <li>Parameters: quantizing as tensors.</li>
+          <li>Activations: <em>calibrating</em> min and max by running inference on a representative dataset and collecting statistics.</li>
+        </ul>
+      </li>
+
+      <li class="check-bullets">No need to retrain the model</li>
+      <li class="cross-bullets">Data dependency: requires a representative dataset to calibrate the quantization parameters</li>
+      <li class="cross-bullets">Limited: may lead to poor accuracy</li>
+      <li class="no-bullets">Advanced approaches exist, e.g., <em>cross-layer equalization</em> for models using ReLU <a href="https://arxiv.org/pdf/1906.04721.pdf">[Nagel et al., 2018]</a></li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Model quantization</h2>
+    <ul>
+      <li class="no-bullets"><em>Quantization</em>: producing fixed-point model parameters while keeping inference accuracy.</li>
+      <li><strong>Quantization-aware training</strong> (QAT): introducing quantization during the training.</li>
+        <ul>
+          <li>Parameters: using quantized representation during the forward pass. The optimizer updates the original (floating-point) version after the backward pass.</li>
+          <li>Activations:
+            <ul>
+              <li>Forward pass: applying quantization as an additional activation function.</li>
+              <li>Backward pass: only zeroing gradients for entries falling out of the valid range.
+                <ul>
+                  <li>Quantization acting as an activation function has zero gradient everywhere, so cannot backpropagate through.</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
         </ul>
       </li>
     </ul>
     <footer>
-      <a href="https://developer.qualcomm.com/sites/default/files/docs/snpe/tools.html#tools_snpe-dlc-quantize">[SNPE SDK docs]</a>
+      <a href="https://arxiv.org/pdf/1806.08342.pdf">[Quantization whitepaper by Google]</a>
     </footer>
   </section>
 </section>
