@@ -73,7 +73,8 @@
 <section>
   <section>
     <h1>Imaging and ML software from a low-level programming perspective</h1>
-    <h3 style="color: red;">{WORK IN PROGRESS}</h3>
+    <h4>Maxim Karpushin</h4>
+    <h4>Wolf Hauser</h4>
     <footer style="height: 4em">
       <img src="images/dxo_logo.png">
       <img src="images/xiaomi_logo.svg">
@@ -142,7 +143,7 @@
     <li>Programmable hardware overview
       <ul>
         <li>Central Processing Units</li>
-        <li>Graphic Processing Units</li>
+        <li>Graphics Processing Units</li>
         <li>Digital Signal Processors</li>
       </ul>
     </li>
@@ -380,7 +381,7 @@
       <li><em>Multithreading:</em> inside a single <em>process</em>, split execution in several <em>threads</em> which execute in parallel.<br>
         Example mail client: one thread for the UI, one for talking to the server, one for search indexing.<br>
         Because slow tasks run in the background, the UI remains responsive.</li>
-      <li><em>Simultaneaous multithreading</em> (SMT) aka <em>Hyperthreading:</em> one physical core pretends to be two cores,<br>
+      <li><em>Simultaneous multithreading</em> (SMT) aka <em>Hyperthreading:</em> one physical core pretends to be two cores,<br>
         fetches instructions from two different threads and mixes the instructions in its instruction queue.</li>
       <li>Multithreading allows each thread to work on a completely different task.<br>
         But we can also use it to split one big task (image processing) among several cores.</li>
@@ -391,8 +392,8 @@
     <h2>Programming for Multithreading</h2>
 
     <ul>
-      <li>Mutliple threads must not write to the same memory address at the same time (bug).</li>
-      <li>Mutliple threads should avoid writing to neighboring memory addresses at the same time (slow).</li>
+      <li>Multiple threads must not write to the same memory address at the same time (bug).</li>
+      <li>Multiple threads should avoid writing to neighboring memory addresses at the same time (slow).</li>
       <li>Execution speed can vary between threads.<br>
         Interrupted by the OS or running on different types of cores.</li>
       <li>Synchronizing data between threads is hard (requires mutexes and atomic variables).<br>
@@ -595,9 +596,10 @@
       </li>
     </ul>
     <footer style="margin: 0">
-      <a href="https://developer.nvidia.com/blog/nvidia-turing-architecture-in-depth/">[source]</a>
-      <a href="https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/">[source]</a>
-      <a href="https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/">[source]</a>
+      <a href="https://developer.nvidia.com/blog/nvidia-turing-architecture-in-depth/">[Turing]</a>
+      <a href="https://developer.nvidia.com/blog/nvidia-ampere-architecture-in-depth/">[Ampere]</a>
+      <a href="https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/">[Hopper]</a>
+      <a href="https://arxiv.org/pdf/2209.05433.pdf">[FP8 whitepaper]</a>
     </footer>
   </section>
 
@@ -1147,6 +1149,20 @@ __global__ void matrix_traversal(float *mat, int N) {
   </section>
 </section>
 
+<section data-markdown>
+  <textarea data-template>
+    ## Conclusion
+     - Know your hardware to get the most of it.
+       - Image, signal processing and modern ML are I/O-bound.
+       - Mind the memory layout, locality and caching.
+     - GPUs are ubiquitous and suitable for imaging tasks.
+       - Occupancy is the key performance factor.
+       - Keep memory access coalesced and avoid divergent threads in the same warp.
+     - Go fixed-point whenever you can.
+       - ML: getting to a quantized model with a good accuracy requires additional effort.
+       - Mind low-precision floating point formats as well.
+  </textarea>
+</section>
 
 </div>  <!-- class="reveal" -->
 </div>  <!-- class="slides" -->
