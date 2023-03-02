@@ -41,6 +41,7 @@
 
   .flex {
     display: flex;
+    align-items: center;
   }
   .flex-col {
     flex: 1 1 100%;
@@ -135,15 +136,27 @@
 
 
 <!-- Outline -->
-<section style="font-size: 0.8em">
+<section>
   <h1>Outline</h1>
   <ol>
     <li style="color: lightgray">Introduction</li>
 
     <li>Programmable hardware overview
       <ul>
-        <li>Central Processing Units</li>
-        <li>Graphics Processing Units</li>
+        <li>Central Processing Units
+          <ul>
+            <li>x86 vs ARM</li>
+            <li>Memory model</li>
+            <li>Caching, SIMD, multithreading</li>
+          </ul>
+        </li>
+        <li>Graphics Processing Units
+          <ul>
+            <li>Graphics pipeline</li>
+            <li>SIMT</li>
+            <li>CUDA samples</li>
+          </ul>
+        </li>
         <li>Digital Signal Processors</li>
       </ul>
     </li>
@@ -1088,6 +1101,35 @@ __global__ void matrix_traversal(float *mat, int N) {
   </section>
 
   <section>
+    <h2>Reminder: Floating Point vs Fixed Point</h2>
+    <div class="flex">
+      <ul class="flex-col">
+        <li class="no-bullets"><strong>Floating point:</strong>
+          <ul>
+            <li>Dedicated compute units</li>
+            <li>Infinite range (+Inf and -Inf are valid numbers)</li>
+            <li>Higher accuracy around zero</li>
+            <li>Divison by zero is allowed</li>
+            <li>NaN</li>
+          </ul>
+        </li>
+        <li class="no-bullets"><strong>Fixed point:</strong>
+          <ul>
+            <li>Integer compute, bit shift operations</li>
+            <li>Finite range</li>
+            <li>Uniform accuracy</li>
+            <li>Division by zero leads to an exception</li>
+          </ul>
+        </li>
+      </ul>
+      <img src="images/floating_point.jpg" class="flex-col"/>
+    </div>
+    <footer>
+      <a href="https://blogs.nvidia.com/blog/2019/11/15/whats-the-difference-between-single-double-multi-and-mixed-precision-computing/">[source]</a>
+    </footer>
+  </section>
+
+  <section>
     <h2>Tensor quantization</h2>
     <p>
       <em>Quantization</em> of a tensor: computing its approximate integer-valued representation in a given range.
@@ -1153,13 +1195,13 @@ __global__ void matrix_traversal(float *mat, int N) {
   <textarea data-template>
     ## Conclusion
      - Know your hardware to get the most of it.
-       - Image, signal processing and modern ML are I/O-bound.
-       - Mind the memory layout, locality and caching.
+       - Image, signal processing and modern ML tend to be I/O-bound.
+       - Mind memory layout, locality and caching.
      - GPUs are ubiquitous and suitable for imaging tasks.
        - Occupancy is the key performance factor.
        - Keep memory access coalesced and avoid divergent threads in the same warp.
      - Go fixed-point whenever you can.
-       - ML: getting to a quantized model with a good accuracy requires additional effort.
+       - ML: getting to a quantized model with good accuracy requires additional effort.
        - Mind low-precision floating point formats as well.
   </textarea>
 </section>
