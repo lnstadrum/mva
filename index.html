@@ -43,9 +43,10 @@
     display: flex;
     align-items: center;
   }
-  .flex-col {
-    flex: 1 1 100%;
-  }
+  .flex-col { flex: 1 1 100%; }
+  .flex-col-25 { flex: 1 1 25%; }
+  .flex-col-50 { flex: 1 1 50%; }
+  .flex-col-75 { flex: 1 1 75%; }
 
   .no-bullets {
     list-style-type: none !important;
@@ -432,24 +433,26 @@
   <section>
     <h2>Memory Hierarchy</h2>
 
-    <ul>
-      <li><em>Size:</em> number of bytes that can be stored.</li>
-      <li><em>Bandwidth:</em> number of bytes that can be read per cycle.</li>
-      <li><em>Latency:</em> number of cycles it takes to read or write one value.</li>
-      <li>Memory cannot be big and fast at the same time.</li>
-      <li>Gap between huge (but slow) main memory and superfast (but tiny) register file is too big.</li>
-      <li><em>Cache:</em> hidden (from the programmer) intermediate memories with different size/speed trade-off.<br>
-        <img src="diagrams/Multi-core_cache_pyramid.svg"></li>
-      <li>Based on the assumption of locality:
-        <ul>
-          <li>Temporal locality: program frequently reads and writes the same address.</li>
-          <li>Spatial locality: program frequently reads and writes consecutive memory addresses.</li>
-        </ul>
-      </li>
-      <li><em>Cache miss:</em> occurring when the requested memory address is not found in a given cache.
-      <li><em>Stalled thread:</em> thread waiting for data from memory.
-      <li>SMT: cache is shared between two threads.</li>
-    </ul>
+    <div class="flex">
+      <ul class="flex-col-75">
+        <li><em>Size:</em> number of bytes that can be stored.</li>
+        <li><em>Bandwidth:</em> number of bytes that can be read per cycle.</li>
+        <li><em>Latency:</em> number of cycles it takes to read or write one value.</li>
+        <li>Memory cannot be big and fast at the same time.</li>
+        <li>Gap between huge (but slow) main memory and superfast (but tiny) register file is too big.</li>
+        <li><em>Cache:</em> hidden (from the programmer) intermediate memories with different size/speed trade-off.</li>
+        <li>Based on the assumption of locality:
+          <ul>
+            <li>Temporal locality: program frequently reads and writes the same address.</li>
+            <li>Spatial locality: program frequently reads and writes consecutive memory addresses.</li>
+          </ul>
+        </li>
+        <li><em>Cache miss:</em> occurring when the requested memory address is not found in a given cache.
+        <li><em>Stalled thread:</em> thread waiting for data from memory.
+        <li>SMT: cache is shared between two threads.</li>
+      </ul>
+      <img class="flex-col-25" src="diagrams/Multi-core_cache_pyramid.svg">
+    </div>
   </section>
 
   <section>
@@ -484,27 +487,29 @@
     <h2>Programming for Cache</h2>
 
     <ul>
-      <li>Spatial locality: easy.</li>
-      <ul>
-        <li>Store pixels consecutively in memory.</li>
-        <li>Data is copied to cache by chunks of 64 bytes <em>(cache line)</em><br>
-          &rarr; Wait for first pixel, get some more for free.</li>
-        <li>CPU detects consecutive access patterns and applies <em>prefetching</em>.<br>
-          &rarr; Wait for first pixel, get all others for free.</li>
-      </ul>
-      <li>Temporal locality: hard.</li>
-      <ul>
-        <li>Typical image processing operation (e.g., convolution) reads from one or more input tiles, applies some computation, and writes to an output tile. Typical algorithms consist of many operations.</li>
-        <li>Tile of 256 &times; 256 pixels, RGB, float (4 bytes per sample): 768 kB &rarr; does not fit in L2 cache.</li>
-        <li>Data must be fetched from L3 cache or even RAM every time.<br>
-          Shared between all cores &rarr; bottleneck, reduces the benefit ot multithreading.</li>
-        <li>Use smaller tiles? Better for cache but less efficient (overlap).</li>
-        <li>Solution: row-based image processing.</li>
+      <li>Spatial locality: easy.
         <ul>
-          <li>Execute algorithm line by line, apply each operation as early as you can.</li>
-          <li>Very efficient, but code is hard to write.</li>
+          <li>Store pixels consecutively in memory.</li>
+          <li>Data is copied to cache by chunks of 64 bytes <em>(cache line)</em><br>
+            &rarr; Wait for first pixel, get some more for free.</li>
+          <li>CPU detects consecutive access patterns and applies <em>prefetching</em>.<br>
+            &rarr; Wait for first pixel, get all others for free.</li>
         </ul>
-      </ul>
+      </li>
+      <li>Temporal locality: hard.
+        <ul>
+          <li>Typical image processing operation (e.g., convolution) reads from one or more input tiles, applies some computation, and writes to an output tile. Typical algorithms consist of many operations.</li>
+          <li>Tile of 256 &times; 256 pixels, RGB, float (4 bytes per sample): 768 kB &rarr; does not fit in L2 cache.</li>
+          <li>Data must be fetched from L3 cache or even RAM every time.<br>
+            Shared between all cores &rarr; bottleneck, reduces the benefit ot multithreading.</li>
+          <li>Use smaller tiles? Better for cache but less efficient (overlap).</li>
+          <li>Solution: row-based image processing.</li>
+          <ul>
+            <li>Execute algorithm line by line, apply each operation as early as you can.</li>
+            <li>Very efficient, but code is hard to write.</li>
+          </ul>
+        </ul>
+      </li>
     </ul>
 
     <footer>
