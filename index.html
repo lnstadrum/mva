@@ -820,6 +820,29 @@ int main(void) {
   </section>
 
   <section>
+    <h2>Divergent threads</h2>
+    <pre><code data-trim data-noescape class="cpp">
+  // ...
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  if (mat[i] > 0) {
+    // Branch A
+  }
+  else {
+    // Branch B
+  }
+  // ...
+    </code></pre>
+    <ul>
+      <li>If condition <code>mat[i] > 0</code> or its opposite holds for the entire warp, mostly no impact on performance.</li>
+      <li>If condition <code>mat[i] > 0</code> holds for some threads but not for others in the same warp, both branches A and B will be executed using an "active threads mask", inducing a performance penalty.</li>
+    </ul>
+    &rightarrow; Common recommendation: align data-dependent execution paths with warp boundaries
+    <footer>
+      <a href="https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf">[Volta whitepaper], p.26</a>
+    </footer>
+  </section>
+
+  <section>
     <h2>Coalesced vs Non-coalesced Access</h2>
     <ul class="no-bullets">
       <li>Consider a CUDA kernel going through a big square matrix of size <code>N</code>.</li>
@@ -941,29 +964,6 @@ __global__ void matrix_traversal(float *mat, int N) {
   // ...
 }
     </code></pre>
-  </section>
-
-  <section>
-    <h2>Divergent threads</h2>
-    <pre><code data-trim data-noescape class="cpp">
-  // ...
-  int i = blockIdx.x * blockDim.x + threadIdx.x;
-  if (mat[i] > 0) {
-    // Branch A
-  }
-  else {
-    // Branch B
-  }
-  // ...
-    </code></pre>
-    <ul>
-      <li>If condition <code>mat[i] > 0</code> or its opposite holds for the entire warp, mostly no impact on performance.</li>
-      <li>If condition <code>mat[i] > 0</code> holds for some threads but not for others in the same warp, both branches A and B will be executed using an "active threads mask", inducing a performance penalty.</li>
-    </ul>
-    &rightarrow; Common recommendation: align data-dependent execution paths with warp boundaries
-    <footer>
-      <a href="https://images.nvidia.com/content/volta-architecture/pdf/volta-architecture-whitepaper.pdf">[Volta whitepaper], p.26</a>
-    </footer>
   </section>
 
   <section>
