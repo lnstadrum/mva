@@ -540,18 +540,18 @@
     <ul>
       <li><em>Vertex shader</em> transforms 3D positions of vertices into 2D on-screen coordinates.
         <ul>
-          <li>Uses camera position, orientation and intrinsic parameters (e.g. field of view).</li>
+          <li>Utilizes camera position, orientation, and intrinsic parameters (e.g., field of view).</li>
           <li>May also compute <em>lighting parameters</em> (e.g., reflected light intensity and color) based on the light source positions and per-vertex normals.</li>
         </ul>
       </li>
       <li><em>Rasterizer</em> samples <em>fragments</em> out of <em>primitives</em> (e.g., triangles) in the 2D coordinate space.
         <ul>
-          <li>It interpolates issued vertex attributes, e.g. <em>texture coordinates</em> and lighting parameters.</li>
+          <li>Interpolates issued vertex attributes, e.g., <em>texture coordinates</em> and lighting parameters.</li>
         </ul>
       </li>
-      <li><em>Fragment shader</em> uses the per-fragment interpolated attributes to get pixel colors.
+      <li><em>Fragment shader</em> uses the per-fragment interpolated attributes to determine pixel colors.
         <ul>
-          <li>Usually, it samples a texture at given texture coordinates to get the color value.</li>
+          <li>Usually, it samples a texture at given texture coordinates to obtain the color value.</li>
           <li>May use lighting parameters to modulate the resulting color.</li>
         </ul>
       </li>
@@ -616,8 +616,8 @@
   <section>
     <h2>Programming and Memory Model</h2>
     <ul>
-      <li>GPUs achieve high throughput by a massive parallelization, which requires designing the software in a particular way.</li>
-      <li>Let us took a look at memory first.</li>
+      <li>GPUs achieve high throughput through extensive parallelization, necessitating specific software design approaches.</li>
+      <li>Let us take a closer look at memory first.</li>
     </ul>
   </section>
 
@@ -654,13 +654,13 @@
         <strong>CUDA</strong> (Compute Unified Device Architecture)
         <ul>
           <li>Parallel computing SDK for Nvidia GPUs</li>
-          <li>C/C++-like language and a compilation toolchain</li>
-          <li>Bundled with precompiled compute libraries (cuBLAS, cuDNN, cuFFT, etc.)
+          <li>Utilizes a C/C++-like language and a compilation toolchain</li>
+          <li>Shipped with precompiled compute libraries (cuBLAS, cuDNN, cuFFT, etc.)
             <ul>
-              <li>Mainly closed source except for CUTLASS</li>
+              <li>Closed-source, except CUTLASS</li>
             </ul>
           </li>
-          <li>Primary compute backend for modern ML: PyTorch and TensorFlow rely heavily on cuDNN/cuBLAS</li>
+          <li>Primary compute backend for modern ML: PyTorch and TensorFlow heavily rely on cuDNN/cuBLAS</li>
         </ul>
       </li>
       <li>
@@ -681,21 +681,21 @@
       <li>
         <strong>OpenCL</strong> (Apple &rightarrow; <em>Khronos Group</em>)
         <ul>
-          <li>Parallel computing software stack to build programs from a C/C++-like language</li>
-          <li>Usable within a wide hardware spectrum, including GPUs, CPUs, FPGAs and other kinds of accelerators</li>
+          <li>Parallel computing software stack used to develop programs using a C/C++-like language</li>
+          <li>Usable across a wide hardware spectrum, including GPUs, CPUs, FPGAs, and various accelerators.</li>
         </ul>
       </li>
       <li>
         <strong>GLSL</strong> (OpenGL Shading Language, <em>Khronos Group</em>)
         <ul>
-          <li>C-like programming language supported by a vast spectrum of graphics hardware</li>
-          <li>Originally computer graphics-specific, now enables general purpose parallel programming (<em>compute shaders</em>)
+          <li>C-like programming language supported by a vast range of graphics hardware.</li>
+          <li>Initially designed for computer graphics, it now enables general-purpose parallel programming (<em>compute shaders</em>).
             <ul>
-              <li>Compute shaders are not available everywhere</li>
+              <li>Compute shaders are not universally available across all platforms.</li>
             </ul>
           </li>
-          <li>Requires a host framework (OpenGL, Vulkan, WebGL)</li>
-          <li>Typically compiled at run time by the GPU driver into GPU-specific machine code</li>
+          <li>Requires a host framework (OpenGL, Vulkan, WebGL) for operation.</li>
+          <li>Typically compiled at runtime by the GPU driver into GPU-specific machine code.</li>
         </ul>
       </li>
     </ul>
@@ -710,7 +710,7 @@
           It provides a hardware abstraction convenient for both programmers and hardware manufacturers to decouple the program source code and device capabilities in a scalable way.
         </div>
       </li>
-      <li>The programs (<em>shaders</em>, <em>kernels</em>) are written in a way to handle a single data entry all over the lifecycle.
+      <li>The programs (<em>shaders</em>, <em>kernels</em>) are written in a way to handle a single data entry throughout their lifecycle.
         <ul>
           <li>Typical granularity: 1 thread per pixel.</li>
         </ul>
@@ -718,30 +718,30 @@
       <li>The hardware and its driver take care of threading.
         <ul>
           <li>To specify the amount of work, threads are grouped into <em>blocks</em> (<em>workgroups</em>), which form a <em>grid</em>.</li>
-          <li>Threads in the same block can exchange information efficiently: they have access to the same low-latency shared memory space.
+          <li>Threads in the same block can efficiently exchange information: they have access to the same low-latency shared memory space.
             <ul>
-              <li>In practice, the HW runs them close to each other, in time and memory.</li>
+              <li>In practice, the hardware runs them closely in time and memory.</li>
             </ul>
           </li>
           <li>The grid configuration is set when launching the program.</li>
         </ul>
-        </li>
-      <li>At runtime, the same instruction is issued in multiple threads, <em>possibly</em> running in parallel.</li>
+      </li>
+      <li>At runtime, the same instruction is issued in multiple threads, <em>potentially</em> running in parallel.</li>
     </ul>
   </section>
 
   <section data-markdown>
     <textarea data-template>
     ## CUDA Kernel Example
-     - The program that follows evaluates expression <code>a*x<sub>i</sub>+y<sub>i</sub></code>
+     - The following program evaluates the expression <code>a*x<sub>i</sub>+y<sub>i</sub></code>
        - <code>x</code> and <code>y</code> are large arrays of the same size.
        - <code>a</code> is a constant.
-     - It illustrates a typical GPU compute workflow.
-       - Preparing the data in CPU main memory.
-       - Uploading the data to GPU global memory.
-       - Launching the computing kernel.
-       - Fetching the computation result back for further processing.
-     - Compiling and executing (linux, requires CUDA toolkit installed):
+     - It illustrates a typical GPU compute workflow:
+       - Preparing data in CPU main memory.
+       - Uploading data to GPU global memory.
+       - Launching the kernel.
+       - Fetching the result back.
+     - Compilation and execution (linux, requires CUDA toolkit installed):
     ```
     nvcc ./saxpy.cu -o saxpy
     ./saxpy
@@ -797,26 +797,26 @@ int main(void) {
   <section>
     <h2>Occupancy</h2>
     <ul class="no-bullets">
-      <li>Performance is conditioned by the number of threads effectively running in parallel. It depends on:
+      <li>Performance is conditioned by the number of threads effectively running in parallel.
         <ul>
-        <li><em>Register pressure</em>: amount of register memory required per thread vs hardware capacity
+        <li><em>Register pressure</em>: amount of register memory required per thread vs the hardware capacity
           <ul>
             <li>Modern CUDA: 255 regular registers per thread max</li>
-            <li><em>Register spilling</em>: if the register file size is not sufficient to store all the registers, the data may be stored in global memory.</li>
-            <li>Register spilling is not permitted in all SIMT implementations and often causes a dramatic slowdown.</li>
+            <li><em>Register spilling</em>: if the register file size is insufficient to store all registers, data is stored in global memory.</li>
+            <li>Register spilling is not allowed in all SIMT implementations and often causes a dramatic slowdown.</li>
           </ul>
         </li>
         <li>Amount of shared memory per thread block vs the hardware capacity
           <ul>
-            <li>CUDA: 48 to 163 Kbytes depending on CUDA Compute Capability</li>
-            <li>OpenGL ES 3.1 Compute Shader: 16 Kbytes as a minimum required by the standard</li>
+            <li>CUDA: 48 to 163 Kbytes depending on the CUDA Compute Capability</li>
+            <li>OpenGL ES 3.1 Compute Shader: 16 Kbytes as the minimum required by the standard</li>
           </ul>
         </li>
-        <li>SM capabilities (e.g. max number of warps per SM)
+        <li>SM capabilities (e.g., max number of warps per SM)
           <ul>
-            <li><em>Warp</em> (CUDA) is a group of 32 consecutive threads.</li>
+            <li><em>Warp</em> (CUDA) is a group of 32 consecutive threads in a block.</li>
             <li>CUDA: 1024 threads per thread block max</li>
-            <li>OpenGL ES 3.1 Compute Shader: 128 threads per <em>workgroup</em> as a minimum required by the standard</li>
+            <li>OpenGL ES 3.1 Compute Shader: 128 threads per <em>workgroup</em> as the minimum required by the standard</li>
           </ul>
         </li>
         <li>Total number of SMs</li>
@@ -843,8 +843,8 @@ int main(void) {
   // ...
     </code></pre>
     <ul>
-      <li>If condition <code>mat[i] > 0</code> or its opposite holds for the entire warp, mostly no impact on performance.</li>
-      <li>If condition <code>mat[i] > 0</code> holds for some threads but not for others in the same warp, both branches A and B will be executed using an "active threads mask", inducing a performance penalty.</li>
+      <li>If condition <code>mat[i] > 0</code> or its opposite holds true for the entire warp, mostly no impact on performance.</li>
+      <li>If condition <code>mat[i] > 0</code> holds for some threads but not for others within the same warp, both branches A and B will be executed using an "active threads mask", resulting in a performance penalty.</li>
     </ul>
     &rightarrow; Common recommendation: align data-dependent execution paths with warp boundaries
     <footer>
@@ -891,7 +891,7 @@ __global__ void matrix_traversal(float *mat, int N) {
       matrix_traversal&lt;&lt;&lt; blocks, threads &gt;&gt;&gt;(matrixDataDevicePtr, N);
     </code></pre>
 
-    <p>Question: which implementation is more efficient (and, of course, why)?</p>
+    <p>Question: which implementation is more efficient and why?</p>
   </section>
 
   <section>
@@ -951,9 +951,9 @@ __global__ void matrix_traversal(float *mat, int N) {
     <h2>Non-coalesced Access: What to Do?</h2>
     <ul class="no-bullets">
       <li>It is not always possible to change the way the memory is accessed.</li>
-      <li>A common shared memory transposition trick:
+      <li>A common transposition trick using <em>shared memory</em>:
         <ul>
-          <li>A tile is read in a coalesced manner and put into a fast shared memory buffer.</li>
+          <li>Reading tiles in a coalesced manner and storing in a fast shared memory buffer</li>
           <li>The transposition is done when reading from it.</li>
           <li>Every thread receives the same value as before.</li>
         </ul>
@@ -990,7 +990,7 @@ __global__ void matrix_traversal(float *mat, int N) {
      - GPUs are widely available massively parallel programmable machines.
      - GPU execution model is SIMT.
        - Threads &rightarrow; Warps &rightarrow; Blocks &rightarrow; Grid (CUDA language)
-     - The amount of parallelism is characterized by occupancy.
+     - The amount of parallelism is characterized by *occupancy*.
      - Memory hierarchy: same principles hold (*"fast is small"*).
        - Coalesced access is critical for performance.
        - L1 cache can be used as program-manageable shared memory.
