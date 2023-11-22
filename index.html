@@ -79,7 +79,6 @@
     <h4>Wolf Hauser</h4>
     <footer style="height: 4em">
       <img src="images/dxo_logo.png">
-      <img src="images/xiaomi_logo.svg">
     </footer>
   </section>
 
@@ -92,7 +91,7 @@
     <textarea data-template>
     ## Imaging Software in Production
     - Designing production-ready imaging algorithms and NN architectures is a challenge.
-       - ML models are not easier to put in production just because they do not lead to segfaults (normally).
+       - *Software 2.O*: ML models are not easier to put into production just because they do not lead to segfaults.
     - **Speed**, **memory** and **energy footprints** are constrained.
     - Algorithmic optimization may involve performance/quality tradeoffs.
     - Knowing your hardware at a low level helps.
@@ -115,22 +114,11 @@
   <section data-markdown>
     <textarea data-template>
     ## Compute-bound vs I/O-bound Algorithms
-    - *Arithmetic density* of an algorithm: number of arithmetic operations performed per byte read from or written to the system memory.
-    - *Compute-bound algorithms* have high arithmetic density. Their performance is limited by the compute speed.
-    - *I/O-bound* or *memory-bound* algorithms have low arithmetic density. Their performance is limited by the memory bandwidth.
+    - *Arithmetic density* of an algorithm: the number of arithmetic operations performed per byte read from or written to the system memory.
+    - *Compute-bound algorithms* demonstrate high arithmetic density. Their performance is limited by compute speed.
+    - *I/O-bound* or *memory-bound* algorithms reveal low arithmetic density. Their performance is constrained by memory bandwidth.
 
-    > Contrary to popular belief, modern imaging problems and their ML implementations tend to be **I/O-bound**.
-    </textarea>
-  </section>
-
-  <section data-markdown>
-    <textarea data-template>
-    ## From Computer Vision to Image Processing
-    Real-world image restoration algorithms (ML or not) are highly demanding in memory bandwidth.
-     - Vision models usually map small images to low-dimensional spaces.
-       - ILSVRC tradition is a 224*224 input and a 1000-long vector output.
-     - Image restoration algorithms usually take and produce images of the same high resolution.
-       - Standard smartphone camera photo resolution is 4000*3000.
+    > Contrary to common belief, modern imaging problems and their ML implementations tend to be **I/O-bound**.
     </textarea>
   </section>
 </section>
@@ -144,21 +132,25 @@
 
     <li>Programmable hardware overview
       <ul>
-        <li>Central Processing Units
+        <li>Central Processing Units (<strong>CPU</strong>)
           <ul>
             <li>x86 vs ARM</li>
             <li>Memory model</li>
             <li>Caching, SIMD, multithreading</li>
           </ul>
         </li>
-        <li>Graphics Processing Units
+        <li>Graphics Processing Units (<strong>GPU</strong>)
           <ul>
             <li>Graphics pipeline</li>
             <li>SIMT</li>
             <li>CUDA samples</li>
           </ul>
         </li>
-        <li>Digital Signal Processors</li>
+        <li>Digital Signal Processors (<strong>DSP</strong>)
+          <ul>
+            <li>Quick overview</li>
+          </ul>
+        </li>
       </ul>
     </li>
 
@@ -199,11 +191,10 @@
   <section data-markdown>
     <textarea data-template>
     ## Mobile vs Desktop: Initial Observations
-    - They are quite similar.
     - No unified memory in the desktop world.
       - Think ahead about CPU&leftrightarrow;GPU data transfer.
       - PCIe is the weak link (~10 times slower than the GPU VRAM bandwidth).
-    - Modern x86 desktop CPUs also include integrated graphics (iGPU) without dedicated memory.
+      - Modern x86 desktop and Apple Silicon CPUs also include integrated graphics (iGPU) without dedicated memory.
     - Digital Signal Processors (DSP) are very common in mobile SoCs.
       - *Edge computing*: processing data right on the device it comes from.
       - NPU is a marketing name/abstraction level on top of the DSPs.
@@ -531,11 +522,12 @@
     <textarea data-template>
     ## GPU: Brief History
      - In early times (~2000 AD), GPUs were <em>rasterization engines</em>.
-       - They sample images pixel by pixel from a vector description of renderable content, e.g. set of 3D vertices, their attributes (such as texture coordinates), light source positions and textures.
+       - They sampled images pixel by pixel from a vector description of renderable content, such as a set of 3D vertices, their attributes (e.g. texture coordinates), light source positions, and textures.
        - Suitable for real-time visualization and... gaming.
-       - They featured *fixed graphics pipeline* (no programmability).
-     - *Pixel shaders*: small programs executed on per-pixel basis to compute its resulting color value (~2001).
-       - Beginning of per-pixel thread granularity, hardly achievable on CPUs.
+       - They featured a *fixed graphics pipeline* (no programmability).
+     - The introduction of *pixel shaders* around 2001 marked a shift.
+       - Pixel shaders were small programs executed on a per-pixel basis to compute the resulting color value.
+       - Beginning of per-pixel thread granularity in real-time, hardly achievable on CPUs.
        - Nvidia GeForce 3 (NV20) and AMD Radeon R100
      - *Microsoft DirectX* and *OpenGL* standards have driven the GPU evolution towards programmability.
        - *GPGPU*: General-Purpose computing on Graphics Processing Units
@@ -661,9 +653,9 @@
       <li>
         <strong>CUDA</strong> (Compute Unified Device Architecture)
         <ul>
-          <li>Parallel computing platform/SDK for Nvidia GPUs</li>
+          <li>Parallel computing SDK for Nvidia GPUs</li>
           <li>C/C++-like language and a compilation toolchain</li>
-          <li>Bundled with precompiled computing libraries (cuBLAS, cuDNN, cuFFT, etc.)
+          <li>Bundled with precompiled compute libraries (cuBLAS, cuDNN, cuFFT, etc.)
             <ul>
               <li>Mainly closed source except for CUTLASS</li>
             </ul>
@@ -674,7 +666,7 @@
       <li>
         <strong>ROCm</strong> (Radeon Open Compute)
         <ul>
-          <li>Parallel computing platform/SDK for AMD GPUs</li>
+          <li>Parallel computing SDK for AMD GPUs</li>
           <li>Offers multiple programming models: OpenCL, HIP and OpenMP</li>
           <li>Open-source</li>
           <li>Officially supports a subset of the AMD GPU product line</li>

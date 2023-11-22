@@ -1,2 +1,2 @@
  - [Presentation](https://lnstadrum.github.io/mva/)
- - [Printable version](https://lnstadrum.github.io/mva/?print-pdf) (then printing to PDF, better works in Chrome/Chromium)
+ - [Printable version](https://lnstadrum.github.io/mva/?print-pdf) (then print to PDF, better works in Chrome/Chromium)
